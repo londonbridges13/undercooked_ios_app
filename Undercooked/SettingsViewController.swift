@@ -248,7 +248,7 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + delayInSeconds) {
             self.loadview?.fadeOut(duration: 0.6)
             self.tableview.reloadData()
-        }
+        }//yeah
     }
     
     
