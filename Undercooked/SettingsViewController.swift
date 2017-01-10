@@ -253,7 +253,6 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
     
     
     
-    
 
     func go_change_password(){
         performSegue(withIdentifier: "changepassword", sender: self)
