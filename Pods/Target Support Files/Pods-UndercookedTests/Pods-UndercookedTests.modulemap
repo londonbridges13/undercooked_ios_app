@@ -1,0 +1,6 @@
+framework module Pods_UndercookedTests {
+  umbrella header "Pods-UndercookedTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
