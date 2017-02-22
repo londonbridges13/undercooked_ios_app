@@ -308,7 +308,7 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
         }
     }
     
-//
+
 }
 public extension UIDevice {
     var modelName: String {
