@@ -76,7 +76,12 @@ class ChangeNameViewController: UIViewController, UITextFieldDelegate {
         let realm = try! Realm()
         var user = realm.objects(User).first
         try! realm.write{
-            self.nameTX.text = user!.name!
+            if user!.name != nil{
+                self.nameTX.text = user!.name!
+            }else{
+                // display email
+                self.nameTX.text = user!.email!
+            }
             print("Displaying Name from Realm")
         }
     }

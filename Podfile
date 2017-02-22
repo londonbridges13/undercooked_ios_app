@@ -15,6 +15,7 @@ target 'Undercooked' do
  	pod 'Kingfisher', '~> 3.0'
 	pod 'FaveButton' 
 	pod 'PullToMakeSoup', '~> 2.0'
+	pod 'ImagePicker'
 
 
   target 'UndercookedTests' do

@@ -11,7 +11,8 @@ import UIKit
 class Topic_CollectionCell: UICollectionViewCell {
     @IBOutlet var topicImageView: UIImageView!
     @IBOutlet var topicLabel: UILabel!
-    
+    @IBOutlet var board: UIView!
+
     func download_image(image_url: String){
         // KingFisher download
         let url = URL(string: image_url)

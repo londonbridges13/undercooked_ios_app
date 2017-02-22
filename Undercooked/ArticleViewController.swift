@@ -109,6 +109,10 @@ class ArticleViewController: ScrollingNavigationViewController, UIWebViewDelegat
         // Dispose of any resources that can be recreated.
     }
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // Do any additional setup after loading the view, typically from a nib.
@@ -227,7 +231,9 @@ class ArticleViewController: ScrollingNavigationViewController, UIWebViewDelegat
             ]
             Alamofire.request("https://secret-citadel-33642.herokuapp.com/api/v1/articles/like_an_article", method: .post, parameters: parameters).responseJSON { (response) in
                 if let count = response.result.value as? Int{
-                    self.likeCountLabel.text = " \(count)"
+                    if count != 0{
+                        self.likeCountLabel.text = " \(count)"
+                    }
                     print(response.result.value)
                 }
             }
@@ -246,7 +252,9 @@ class ArticleViewController: ScrollingNavigationViewController, UIWebViewDelegat
             ]
             Alamofire.request("https://secret-citadel-33642.herokuapp.com/api/v1/articles/get_article_like_count", method: .post, parameters: parameters).responseJSON { (response) in
                 if let count = response.result.value as? Int{
-                    self.likeCountLabel.text = " \(count)"
+                    if count != 0{
+                        self.likeCountLabel.text = " \(count)"
+                    }
                     print(response.result.value)
                 }
             }

@@ -11,18 +11,22 @@ import RealmSwift
 import Alamofire
 import Jelly
 import Kingfisher
+import ImagePicker
 
-class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+
+class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate, ImagePickerDelegate  {
 
     @IBOutlet var tableview: UITableView!
     
+    var refreshControl: UIRefreshControl!
     var profile_pic : UIImage?
     var profile_pic_url : String?
     var username : String?
     var results = [Searchable]() // All Results, Products, Articles, Ads, Promotions
     var selected_article_url : String?
     var selected_article : Article?
-
+    var uploading_image = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.setNavigationBarHidden(true, animated: true)
@@ -31,8 +35,10 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         tableview.dataSource = self
         get_saved_articles()
 
-        
-//        update_profile_pic(image: UIImage(named: "ExploreImage")!)
+        refreshControl = UIRefreshControl()
+        refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        refreshControl.addTarget(self, action: #selector(self.refresh), for: UIControlEvents.valueChanged)
+        tableview.addSubview(refreshControl) // not required when using UITableViewController
 //        check_for_profile_pic()
         // Do any additional setup after loading the view.
     }
@@ -47,6 +53,22 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         // Dispose of any resources that can be recreated.
     }
     
+    func refresh(sender:AnyObject) {
+        // Code to refresh table view
+        self.reload_profile_tab()
+    }
+    
+    func reload_profile_tab(){
+//        UIApplication.shared.beginIgnoringInteractionEvents()
+//        check_for_profile_pic()
+        get_saved_articles()
+        
+        var delayInSeconds = 1.05
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + delayInSeconds) {
+            self.refreshControl.endRefreshing()
+//            UIApplication.shared.endIgnoringInteractionEvents()
+        }
+    }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.results.count + 2
@@ -73,15 +95,28 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell.backView.layer.shadowOpacity = 0.6
             cell.backView.layer.shadowOffset = CGSize(width: 0, height: 1.7)
             cell.backView.layer.shadowRadius = 2
-            
+            cell.update_image_button?.addTarget(self, action: #selector(ProfileViewController.set_new_image), for: .touchUpInside)
             cell.settingsButton.addTarget(self, action: #selector(ProfileViewController.segue_to_settings), for: .touchUpInside)
             if self.profile_pic_url != nil{
-                cell.download_image(image_url: self.profile_pic_url!)
+                if self.profile_pic_url!.contains("missing.png") == false{
+                    cell.download_image(image_url: self.profile_pic_url!)
+                    print(profile_pic_url)
+                }else{
+                    cell.profileImageView.image = UIImage(named: "profile_pic")
+                }
             }
             if self.username != nil{
                 cell.nameLabel.text = username!
             }else{
                 cell.nameLabel.text = ""
+            }
+            cell.end_loading()
+            if self.uploading_image == false {
+                // don't display activity indicator
+                cell.end_loading()
+            }else{
+                // display activity indicator
+                cell.loading_image()
             }
             return cell
         }else if indexPath.row == 1{
@@ -107,6 +142,13 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
                     cell.get_article_image(url: results[indexx].article!.article_image_url!)
                     cell.articleImageView.backgroundColor = UIColor.clear
                 }
+                if results[indexx].article!.article_date != nil{
+                    let date = results[indexx].article!.article_date!
+                    
+                    cell.dateLabel.text = date.dashedStringFromDate()
+                }
+                
+
             }
             cell.topicLabel.text = "Saved"
             
@@ -160,7 +202,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func get_profile_pic(){
-        
+
         let realm = try! Realm()
         var user = realm.objects(User).first
         if user != nil && user?.access_token != nil && user?.client_token != nil{
@@ -180,49 +222,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
 
     }
     
-    func update_profile_pic(image : UIImage){
-        
-        let realm = try! Realm()
-        var user = realm.objects(User).first
-        if user != nil && user?.access_token != nil && user?.client_token != nil{
-            // API Call for user profile pic, might not have one
-            let data = UIImagePNGRepresentation(UIImage(named: "back_button_image")!) as NSData!
-            print(UIImage(named: "back_button_image")!)
-            print("")
-            let pic : Data = UIImageJPEGRepresentation(image, 1)!
-            let pic_b64 = pic.base64EncodedString()
-            
-            let parameters: Parameters = [
-                "access_token": user!.client_token!,
-                "utoken": user!.access_token!,
-                "photo_path": "data:image/jpeg;base64,\(pic_b64)"
-
-            ]
-            let URL = try! URLRequest(url: "https://secret-citadel-33642.herokuapp.com/api/v1/users/update_profile_pic", method: .post)
-            Alamofire.upload(
-                multipartFormData: { multipartFormData in
-                    print("pic_b64 : \(pic_b64)")
-                    for (key, value) in parameters {
-                        multipartFormData.append((value as AnyObject).data(using: String.Encoding.utf8.rawValue)!, withName: key)
-                    }
-            },
-                with: URL,
-                encodingCompletion: { encodingResult in
-                    switch encodingResult {
-                    case .success(let upload, _, _):
-                        upload.responseJSON { response in
-                            print(response.result.value)
-                        }
-                    case .failure(let encodingError):
-                        print(encodingError)
-                    }
-            }
-            )
-            
-        }
-        
-    }
-
+   
     
     
     func get_username(){
@@ -288,6 +288,16 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
                             if article_url != nil{
                                 a.article_url = "\(article_url!)"
                             }
+                            var article_date = article["article_date"] as? String
+                            if article_date != nil{
+                                let dateFormatter = DateFormatter()
+                                dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+                                dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+                                let date = dateFormatter.date(from: article_date!)
+                                print("date: \(date)")
+                                a.article_date = date!
+                            }
+
 //                            self.articles.append(a)
                             var result = Searchable()
                             result.article = a
@@ -355,6 +365,103 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
 
     }
     
+    
+    
+    // Update Profile Picture
+    func update_profile_pic(image : UIImage){
+        uploading_image = true
+//        tableview.refreshControl = nil
+        refreshControl.removeFromSuperview()
+        
+        let realm = try! Realm()
+        var user = realm.objects(User).first
+        if user != nil && user?.access_token != nil && user?.client_token != nil{
+            // API Call for user profile pic, might not have one
+            let data = UIImagePNGRepresentation(UIImage(named: "back_button_image")!) as NSData!
+            print(UIImage(named: "back_button_image")!)
+            print("")
+            let pic : Data = UIImageJPEGRepresentation(image, 1)!
+            let pic_b64 = pic.base64EncodedString()
+            
+            let parameters: Parameters = [
+                "access_token": user!.client_token!,
+                "utoken": user!.access_token!,
+                "photo_path": "data:image/jpeg;base64,\(pic_b64)"
+                
+            ]
+            let URL = try! URLRequest(url: "https://secret-citadel-33642.herokuapp.com/api/v1/users/update_profile_pic", method: .post)
+            Alamofire.upload(
+                multipartFormData: { multipartFormData in
+                    print("pic_b64 : \(pic_b64)")
+                    for (key, value) in parameters {
+                        multipartFormData.append((value as AnyObject).data(using: String.Encoding.utf8.rawValue)!, withName: key)
+                    }
+            },
+                with: URL,
+                encodingCompletion: { encodingResult in
+                    switch encodingResult {
+                    case .success(let upload, _, _):
+                        upload.responseJSON { response in
+                            print(response.result.value)
+                            self.uploading_image = false
+                            self.get_profile_pic()
+                            self.tableview.addSubview(self.refreshControl) // bringing back the refresh feature
+                        }
+                    case .failure(let encodingError):
+                        print(encodingError)
+                        self.uploading_image = false
+                        self.get_profile_pic()
+                        self.tableview.addSubview(self.refreshControl) // bringing back the refresh feature
+                    }
+            }
+            )
+            
+        }
+        
+    }
+    
+    
+    func set_new_image(){
+        let imagePicker = ImagePickerController()
+        imagePicker.imageLimit = 1
+        
+        imagePicker.delegate = self
+        
+        present(imagePicker, animated: true, completion: nil)
+    }
+    
+    
+    
+    
+    
+    // ImagePicker Delegates
+    func cancelButtonDidPress(_ imagePicker: ImagePickerController) {
+        imagePicker.dismiss(animated: true, completion: nil)
+    }
+    
+    func wrapperDidPress(_ imagePicker: ImagePickerController, images: [UIImage]) {
+        guard images.count > 0 else { return }
+        
+        if images.first != nil{
+            self.update_profile_pic(image: images.first!)
+        }
+        //        let lightboxImages = images.map {
+        //            return LightboxImage(image: $0)
+        //        }
+        //
+        //        let lightbox = LightboxController(images: lightboxImages, startIndex: 0)
+        //        imagePicker.present(lightbox, animated: true, completion: nil)
+    }
+    
+    func doneButtonDidPress(_ imagePicker: ImagePickerController, images: [UIImage]) {
+        if images.first != nil{
+            self.update_profile_pic(image: images.first!)
+        }
+        imagePicker.dismiss(animated: true, completion: nil)
+    }
+    
+    
+
     
     
     

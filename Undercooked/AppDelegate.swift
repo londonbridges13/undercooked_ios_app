@@ -25,9 +25,48 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool{
         // Override point for customization after application launch.
         print("hi")
+//        self.request_token()
+//        self.check_user_token() // should be after/ in request above
+////        self.check_user()
+        
+        
+        //Realm
+        
+        let config =     Realm.Configuration(
+            // Set the new schema version. This must be greater than the previously used
+            // version (if you've never set a schema version before, the version is 0).
+            schemaVersion: 1,
+            
+            // Set the block which will be called automatically when opening a Realm with
+            // a schema version lower than the one set above
+            migrationBlock: { migration, oldSchemaVersion in
+                migration.enumerateObjects(ofType: User.className()) { oldObject, newObject in
+//                    if oldSchemaVersion < 1 {
+//                        var value = false
+//                        newObject!["did_finish_selecting_topics"] = value
+//                    }
+                    // Added newer versions here
+//                    if oldSchemaVersion < 2 {
+//                    }
+                }
+        }
+            
+        )
+        
+        //Tell Realm to use this new configuration object for the default Realm
+        Realm.Configuration.defaultConfiguration = config
+        
+        // Now that we've told Realm how to handle the schema change, opening the file
+        // will automatically perform the migration
+        let realm = try! Realm()
+        
+        //End Realm
+        
         self.request_token()
         self.check_user_token() // should be after/ in request above
 //        self.check_user()
+
+        
         return true
     }
 

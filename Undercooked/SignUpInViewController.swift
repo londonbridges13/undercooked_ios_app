@@ -8,41 +8,81 @@
 
 import UIKit
 import Jelly
+//import AlertOnboarding
 
-class SignUpInViewController: UIViewController {
+class SignUpInViewController: UIViewController, AlertOnboardingDelegate {
 
     @IBOutlet var signUpButton: UIButton!
     @IBOutlet var signInButton: UIButton!
+    @IBOutlet var backgroundImageView: UIImageView!
     
     var jellyAnimator: JellyAnimator?
+    var alertView: AlertOnboarding!
+
+    var arrayOfImage = ["welcome","onboard1", "onboard2", "Go"]
+    var arrayOfTitle = ["Welcome to Undercooked","Select Your Favorite Topics", "Read Interesting Articles", "Get Started"]
+    var arrayOfDescription = ["Hope you enjoy insightful entertaining articles. \n That's all we've got.","We have a wide range of topics to choose from. \n Sweets, Vegan, Health and Nutrition, and more","Enjoy Stories, Gather Recipes, Share the fun","Sign Up and Get Cooking in Seconds!"]
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        applyMotionEffect(toView: backgroundImageView, magnitude: 30)
+
         self.signInButton.layer.cornerRadius = 4
         self.signUpButton.layer.cornerRadius = 4
-        self.signInButton.layer.borderColor = UIColor.gray.cgColor
-        self.signUpButton.layer.borderColor = UIColor.gray.cgColor
+        self.signInButton.layer.borderColor = UIColor.white.cgColor
+        self.signUpButton.layer.borderColor = UIColor.white.cgColor
         self.signUpButton.layer.borderWidth = 1.25
         self.signInButton.layer.borderWidth = 1.25
         
         self.signUpButton.addTarget(self, action: "sign_up", for: .touchUpInside)
         self.signInButton.addTarget(self, action: "sign_in", for: .touchUpInside)
 
+        
+        var adelayInSeconds = 0.425
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + adelayInSeconds) {
+            self.show_onboard_alert()
+        }
+
         // Do any additional setup after loading the view.
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        alertView = AlertOnboarding(arrayOfImage: arrayOfImage, arrayOfTitle: arrayOfTitle, arrayOfDescription: arrayOfDescription)
+        alertView.delegate = self
+    }
+    override var prefersStatusBarHidden : Bool {
+        return true
+    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
+    func slideshow(){
+        self.backgroundImageView.animationImages = [UIImage(named:"welcome")!, UIImage(named:"onboard1")!, UIImage(named:"onboard2")!]
+        self.backgroundImageView.animationDuration = 1.0
+        self.backgroundImageView.animationRepeatCount = 5
+        self.backgroundImageView.startAnimating()
+
+    }
     
+    func show_onboard_alert(){
+        self.alertView.show()
+    }
+    
+  
     func sign_up(){
         //Jelly Animation required
         var signtext = "Sign Up"
         let viewController : SignUpInAlertViewController = self.storyboard?.instantiateViewController(withIdentifier: "SignUpInAlertViewController") as! SignUpInAlertViewController
         viewController.labeltext = signtext
+        viewController.segueTopicsButton.addTarget(self, action: #selector(SignUpInViewController.segue_to_select_topics), for: .touchUpInside)
+        viewController.segueHomeButton.addTarget(self, action: #selector(SignUpInViewController.segue_to_home_tab), for: .touchUpInside)
+        
+
         var midy = (self.view.frame.height / 2) - (240 / 2)
         let alertPresentation = JellySlideInPresentation(dismissCurve: .linear,
                                                          presentationCurve: .linear,
@@ -117,5 +157,41 @@ class SignUpInViewController: UIViewController {
         // Pass the selected object to the new view controller.
     }
     */
+
+    
+    //--------------------------------------------------------
+    // MARK: DELEGATE METHODS --------------------------------
+    //--------------------------------------------------------
+    
+    func alertOnboardingSkipped(_ currentStep: Int, maxStep: Int) {
+        print("Onboarding skipped the \(currentStep) step and the max step he saw was the number \(maxStep)")
+    }
+    
+    func alertOnboardingCompleted() {
+        print("Onboarding completed!")
+    }
+    
+    func alertOnboardingNext(_ nextStep: Int) {
+        print("Next step triggered! \(nextStep)")
+    }
+    
+    
+    
+    // Motion
+    func applyMotionEffect (toView view:UIView, magnitude:Float) {
+        let xMotion = UIInterpolatingMotionEffect(keyPath: "center.x", type: .tiltAlongHorizontalAxis)
+        xMotion.minimumRelativeValue = -magnitude
+        xMotion.maximumRelativeValue = magnitude
+        
+        let yMotion = UIInterpolatingMotionEffect(keyPath: "center.y", type: .tiltAlongVerticalAxis)
+        yMotion.minimumRelativeValue = -magnitude
+        yMotion.maximumRelativeValue = magnitude
+        
+        let group = UIMotionEffectGroup()
+        group.motionEffects = [xMotion, yMotion]
+        
+        view.addMotionEffect(group)
+    }
+    
 
 }

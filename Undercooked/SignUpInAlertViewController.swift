@@ -161,7 +161,7 @@ class SignUpInAlertViewController: UIViewController, UITextFieldDelegate {
     }
     
     func request_sign_up(email : String, password : String, access_token : String, user_token : String = ""){
-        print("requesting sign in")
+        print("requesting sign up")
         let parameters: Parameters = [
             "access_token": access_token,
             "uemail": email,
@@ -175,11 +175,12 @@ class SignUpInAlertViewController: UIViewController, UITextFieldDelegate {
                 if name != nil{
                     self.username = name!
                 }
-                var user_token = result["access_token"] as? String
-                if user_token != nil{
-                    // Successfully signed in, segue to Select Topics
-                    print(user_token!)
-                    self.set_user_token(user_token: user_token!)
+                var new_user_token = result["access_token"] as? String
+                if new_user_token != nil{
+                    // Successfully signed up, segue to Select Topics
+                    print("Successfully signed up, segue to Select Topics")
+                    print(new_user_token!)
+                    self.set_user_token(user_token: new_user_token!)
                     self.set_user_email_and_password(email: email, password: password)
                     self.segueTopicsButton.sendActions(for: .touchUpInside)
                 }else{

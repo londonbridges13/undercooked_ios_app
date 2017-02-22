@@ -21,6 +21,8 @@
 		3E70272E1DF4B7DA007FF70E /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E70272D1DF4B7DA007FF70E /* ProfileViewController.swift */; };
 		3E7027311DF4B814007FF70E /* ProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7027301DF4B814007FF70E /* ProfileCell.swift */; };
 		3E7027331DF768CA007FF70E /* ExploreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7027321DF768C9007FF70E /* ExploreViewController.swift */; };
+		3E8DF1F41E57588700482B10 /* FeedbackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E8DF1F31E57588700482B10 /* FeedbackViewController.swift */; };
+		3E8DF1F61E57694300482B10 /* SuggestionAlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E8DF1F51E57694300482B10 /* SuggestionAlertViewController.swift */; };
 		3E9BF1AF1E0A1ADD00625ACE /* Article.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E9BF1AD1E0A1ADD00625ACE /* Article.swift */; };
 		3E9BF1B01E0A1ADD00625ACE /* Topic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E9BF1AE1E0A1ADD00625ACE /* Topic.swift */; };
 		3E9BF2221E105BFA00625ACE /* Searchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E9BF2211E105BFA00625ACE /* Searchable.swift */; };
@@ -47,6 +49,10 @@
 		3EB6ECA51DF13EE600F99BF5 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EB6ECA41DF13EE600F99BF5 /* HomeViewController.swift */; };
 		3EB6ECA71DF1DDE200F99BF5 /* ArticleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EB6ECA61DF1DDE200F99BF5 /* ArticleCell.swift */; };
 		3EDA1ECD1E1EE87100C25B7B /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EDA1ECC1E1EE87100C25B7B /* SettingsViewController.swift */; };
+		3EDCC0951E33E77E00F5E7FD /* AlertChildPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EDCC0921E33E77E00F5E7FD /* AlertChildPageViewController.swift */; };
+		3EDCC0961E33E77F00F5E7FD /* AlertOnboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EDCC0931E33E77E00F5E7FD /* AlertOnboarding.swift */; };
+		3EDCC0971E33E77F00F5E7FD /* AlertPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EDCC0941E33E77E00F5E7FD /* AlertPageViewController.swift */; };
+		3EDCC0991E33EB5200F5E7FD /* AlertChildPageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3EDCC0981E33EB5200F5E7FD /* AlertChildPageViewController.xib */; };
 		8419D8DDB4BEB7E836484C88 /* Pods_UndercookedUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30F4E537CF7A7ABFAA369BE8 /* Pods_UndercookedUITests.framework */; };
 		F02E5C478D361CECC25FB751 /* Pods_Undercooked.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BF130561FE9C470D56D59CE /* Pods_Undercooked.framework */; };
 		F1E447D345BA074547419390 /* Pods_UndercookedTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D42F3E1759967B792C713BA6 /* Pods_UndercookedTests.framework */; };
@@ -93,6 +99,8 @@
 		3E70272D1DF4B7DA007FF70E /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		3E7027301DF4B814007FF70E /* ProfileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileCell.swift; sourceTree = "<group>"; };
 		3E7027321DF768C9007FF70E /* ExploreViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExploreViewController.swift; sourceTree = "<group>"; };
+		3E8DF1F31E57588700482B10 /* FeedbackViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedbackViewController.swift; sourceTree = "<group>"; };
+		3E8DF1F51E57694300482B10 /* SuggestionAlertViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuggestionAlertViewController.swift; sourceTree = "<group>"; };
 		3E9BF1AD1E0A1ADD00625ACE /* Article.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Article.swift; sourceTree = "<group>"; };
 		3E9BF1AE1E0A1ADD00625ACE /* Topic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Topic.swift; sourceTree = "<group>"; };
 		3E9BF2211E105BFA00625ACE /* Searchable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Searchable.swift; sourceTree = "<group>"; };
@@ -119,6 +127,10 @@
 		3EB6ECA41DF13EE600F99BF5 /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		3EB6ECA61DF1DDE200F99BF5 /* ArticleCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleCell.swift; sourceTree = "<group>"; };
 		3EDA1ECC1E1EE87100C25B7B /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		3EDCC0921E33E77E00F5E7FD /* AlertChildPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlertChildPageViewController.swift; sourceTree = "<group>"; };
+		3EDCC0931E33E77E00F5E7FD /* AlertOnboarding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlertOnboarding.swift; sourceTree = "<group>"; };
+		3EDCC0941E33E77E00F5E7FD /* AlertPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlertPageViewController.swift; sourceTree = "<group>"; };
+		3EDCC0981E33EB5200F5E7FD /* AlertChildPageViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlertChildPageViewController.xib; sourceTree = "<group>"; };
 		43E0A45E7342FFE56F31BA1C /* Pods-UndercookedUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UndercookedUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-UndercookedUITests/Pods-UndercookedUITests.release.xcconfig"; sourceTree = "<group>"; };
 		7250C2349695285BD13776A5 /* Pods-Undercooked.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Undercooked.release.xcconfig"; path = "Pods/Target Support Files/Pods-Undercooked/Pods-Undercooked.release.xcconfig"; sourceTree = "<group>"; };
 		C5AF540528BC04F9EFCC9435 /* Pods-UndercookedTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UndercookedTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-UndercookedTests/Pods-UndercookedTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -194,6 +206,7 @@
 				3E45F6501DECB495000A66A4 /* Info.plist */,
 				3EA8EB171DECC5BF008DD85D /* SanchezSlab.otf */,
 				3E9BF1AD1E0A1ADD00625ACE /* Article.swift */,
+				3E8DF1F21E5757FB00482B10 /* Feedback */,
 				3E9BF2211E105BFA00625ACE /* Searchable.swift */,
 				3E9BF2231E105C2F00625ACE /* Product.swift */,
 				3E9BF1AE1E0A1ADD00625ACE /* Topic.swift */,
@@ -249,6 +262,15 @@
 			name = ProfileCells;
 			sourceTree = "<group>";
 		};
+		3E8DF1F21E5757FB00482B10 /* Feedback */ = {
+			isa = PBXGroup;
+			children = (
+				3E8DF1F31E57588700482B10 /* FeedbackViewController.swift */,
+				3E8DF1F51E57694300482B10 /* SuggestionAlertViewController.swift */,
+			);
+			name = Feedback;
+			sourceTree = "<group>";
+		};
 		3E9BF2691E182AA400625ACE /* TopicsCells */ = {
 			isa = PBXGroup;
 			children = (
@@ -260,6 +282,7 @@
 		3EA8EB1B1DEE2E32008DD85D /* Onboard Process */ = {
 			isa = PBXGroup;
 			children = (
+				3EDCC0911E33E76200F5E7FD /* AlertOnboarding */,
 				3EB6EC931DF0902000F99BF5 /* Events */,
 				3EB6EC8A1DEF436500F99BF5 /* OnboardGetStartedViewController.swift */,
 				3EA8EB1F1DEE4ACC008DD85D /* OnboardArticleViewController.swift */,
@@ -285,6 +308,7 @@
 			children = (
 				3EB6EC8C1DEFBA6A00F99BF5 /* SignUpInViewController.swift */,
 				3EB6EC911DEFC7E000F99BF5 /* SignUpInAlertViewController.swift */,
+				3EDCC0981E33EB5200F5E7FD /* AlertChildPageViewController.xib */,
 			);
 			name = SignUpIn;
 			sourceTree = "<group>";
@@ -335,6 +359,16 @@
 				3E5D74B41DF1FCC300955DAE /* ProductCell.swift */,
 			);
 			name = Cells;
+			sourceTree = "<group>";
+		};
+		3EDCC0911E33E76200F5E7FD /* AlertOnboarding */ = {
+			isa = PBXGroup;
+			children = (
+				3EDCC0921E33E77E00F5E7FD /* AlertChildPageViewController.swift */,
+				3EDCC0931E33E77E00F5E7FD /* AlertOnboarding.swift */,
+				3EDCC0941E33E77E00F5E7FD /* AlertPageViewController.swift */,
+			);
+			name = AlertOnboarding;
 			sourceTree = "<group>";
 		};
 		CF1ACFF36D028ACF3ADBE7A4 /* Frameworks */ = {
@@ -439,7 +473,7 @@
 						CreatedOnToolsVersion = 8.1;
 						DevelopmentTeam = MP76YT95VQ;
 						LastSwiftMigration = 0810;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 					};
 					3E45F6541DECB497000A66A4 = {
 						CreatedOnToolsVersion = 8.1;
@@ -484,6 +518,7 @@
 				3E45F64F1DECB495000A66A4 /* LaunchScreen.storyboard in Resources */,
 				3E45F64C1DECB495000A66A4 /* Assets.xcassets in Resources */,
 				3E45F64A1DECB493000A66A4 /* Main.storyboard in Resources */,
+				3EDCC0991E33EB5200F5E7FD /* AlertChildPageViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -647,12 +682,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				3EB2175B1E218A58001296E7 /* ChangePasswordViewController.swift in Sources */,
+				3E8DF1F61E57694300482B10 /* SuggestionAlertViewController.swift in Sources */,
 				3EB6EC951DF0905400F99BF5 /* LocationAlertViewController.swift in Sources */,
 				3EB6ECA31DF13E8600F99BF5 /* TopicHeaderCell.swift in Sources */,
+				3E8DF1F41E57588700482B10 /* FeedbackViewController.swift in Sources */,
 				3EA8EB201DEE4ACC008DD85D /* OnboardArticleViewController.swift in Sources */,
 				3E9BF2661E1828F300625ACE /* TopicsViewController.swift in Sources */,
 				3E7027311DF4B814007FF70E /* ProfileCell.swift in Sources */,
 				3EB6EC9C1DF0A23700F99BF5 /* Topic_CollectionCell.swift in Sources */,
+				3EDCC0961E33E77F00F5E7FD /* AlertOnboarding.swift in Sources */,
 				3EB6EC8F1DEFC00300F99BF5 /* OnboardResourceTableViewCell.swift in Sources */,
 				3EDA1ECD1E1EE87100C25B7B /* SettingsViewController.swift in Sources */,
 				3EB6EC921DEFC7E000F99BF5 /* SignUpInAlertViewController.swift in Sources */,
@@ -672,10 +710,12 @@
 				3E9BF2681E18291B00625ACE /* SwapTopicsViewController.swift in Sources */,
 				3E5D74B51DF1FCC300955DAE /* ProductCell.swift in Sources */,
 				3E7027331DF768CA007FF70E /* ExploreViewController.swift in Sources */,
+				3EDCC0951E33E77E00F5E7FD /* AlertChildPageViewController.swift in Sources */,
 				3E5D74B71DF287AF00955DAE /* ProductViewController.swift in Sources */,
 				3E9BF1AF1E0A1ADD00625ACE /* Article.swift in Sources */,
 				3E70272A1DF323B4007FF70E /* ArticleViewController.swift in Sources */,
 				3E9BF1B01E0A1ADD00625ACE /* Topic.swift in Sources */,
+				3EDCC0971E33E77F00F5E7FD /* AlertPageViewController.swift in Sources */,
 				3E3A06871E0272F5005745E9 /* User.swift in Sources */,
 				3E70272E1DF4B7DA007FF70E /* ProfileViewController.swift in Sources */,
 				3EB6EC9F1DF0DDB600F99BF5 /* TabViewController.swift in Sources */,
@@ -830,16 +870,16 @@
 			baseConfigurationReference = 0ECA9BBADA8EC384397C0A75 /* Pods-Undercooked.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Patricia McKay (247YX7FWG7)";
+				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = MP76YT95VQ;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Undercooked/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.lyndonsamualmckay.Undercooked;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "dfb891a9-2c3a-45b0-834f-78130e4d913d";
-				PROVISIONING_PROFILE_SPECIFIER = "Undercooked Dev Profile";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -849,16 +889,16 @@
 			baseConfigurationReference = 7250C2349695285BD13776A5 /* Pods-Undercooked.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Patricia McKay (247YX7FWG7)";
+				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = MP76YT95VQ;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Undercooked/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.lyndonsamualmckay.Undercooked;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "dfb891a9-2c3a-45b0-834f-78130e4d913d";
-				PROVISIONING_PROFILE_SPECIFIER = "Undercooked Dev Profile";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;

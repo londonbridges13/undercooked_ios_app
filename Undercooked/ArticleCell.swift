@@ -13,6 +13,7 @@ class ArticleCell: UITableViewCell {
 
     @IBOutlet var topicLabel: UILabel!
     @IBOutlet var titleLabel: UILabel!
+    @IBOutlet var dateLabel: UILabel!
     @IBOutlet var descLabel: UILabel!
     @IBOutlet var resourceLabel: UILabel!
     @IBOutlet var articleImageView: UIImageView!

@@ -13,7 +13,7 @@ import RealmSwift
 import Alamofire
 import Kingfisher
 import PullToMakeSoup
-
+import Foundation
 
 class HomeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource {
 
@@ -27,6 +27,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     var jellyAnimator: JellyAnimator?
     var selected_topic = "Handpicked"
     var selected_topic_image : String? // url
+    var selected_handpicked = true // checks if the handpicked topic was selected
     var topics = [Topic]()
     var articles = [Article]()
     var results = [Searchable]() // All Results, Products, Articles, Ads, Promotions
@@ -43,7 +44,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         self.tableview.dataSource = self
         self.topicLabel.text = self.selected_topic
         self.initial_load()
-        
+        self.check_time_to_get_feedback()
         //let adelayInSeconds = 1.25
       //  DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + adelayInSeconds) {
        // }
@@ -68,9 +69,13 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         // Dispose of any resources that can be recreated.
     }
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
     func initial_load(){
         get_topics()
-//        get_handpicked_articles()
+        get_handpicked_articles()
     }
     
     //collectionview
@@ -86,8 +91,9 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             
             
             cell.topicLabel.text = "Handpicked"
-//            cell.topicImageView.image = UIImage(named: "")
-            cell.layer.cornerRadius = 3
+            cell.topicImageView.image = UIImage(named: "handpicked")
+            cell.board.layer.cornerRadius = 4
+//            cell.board.backgroundColor = UIColor.clear
 
             return cell
         }else{
@@ -98,7 +104,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             cell.topicImageView.layer.shadowOffset = CGSize.zero
             cell.topicImageView.layer.shadowRadius = 2
 
-            cell.layer.cornerRadius = 3
+            cell.board.layer.cornerRadius = 4
             cell.topicImageView.layer.masksToBounds = true
             // i dont know if any of this works
             
@@ -123,12 +129,19 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             self.selected_topic = handpicked//self.topics[index].title!
             self.topicLabel.text = handpicked
             self.selected_topic_image = ""
+            self.selected_handpicked = true
 //            self.selected_topic_image = UIImage(named: "")
             self.results.removeAll()
             self.start_loading()
-//            self.get_handpicked_articles()
+            
+            var delayInSeconds = 0.35
+            // I deleyed the process because I didn't want the user to see the content load before the loading screen appeared.
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + delayInSeconds) {
+                self.get_handpicked_articles()
+            }
             
         }else{
+            self.selected_handpicked = false
             if self.topics[index].title != nil{
                 self.topic_viewed = self.topics[index].title!
                 self.selected_topic = self.topics[index].title!
@@ -163,7 +176,10 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         if indexPath.row == 0{
             let cell : TopicHeaderCell = tableview.dequeueReusableCell(withIdentifier: "TopicHeaderCell", for: indexPath) as! TopicHeaderCell
             cell.topicLabel.text = self.selected_topic
-            if self.selected_topic_image != nil{
+            if self.selected_handpicked == true{
+                cell.topicImageView.image = UIImage(named: "handpicked")
+                cell.topicImageView.layer.cornerRadius = 5
+            }else if self.selected_topic_image != nil{
                 let url = URL(string: "\(self.selected_topic_image!)")
                 cell.topicImageView.kf.setImage(with: url)
             }
@@ -172,6 +188,8 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         }else if results[indexx].article != nil{
             // Display articles
             let cell: ArticleCell = tableview.dequeueReusableCell(withIdentifier: "ArticleCell", for: indexPath) as! ArticleCell
+            
+            cell.topicLabel.text = self.selected_topic
             if results[indexx].article!.title != nil{
                 cell.titleLabel.text = results[indexx].article!.title!
             }
@@ -185,7 +203,15 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
                 cell.get_article_image(url: results[indexx].article!.article_image_url!)
                 cell.articleImageView.backgroundColor = UIColor.clear
             }
-            cell.topicLabel.text = self.selected_topic
+            if results[indexx].article!.display_topic != nil{
+                cell.topicLabel.text = results[indexx].article!.display_topic!
+            }
+            if results[indexx].article!.article_date != nil{
+                let date = results[indexx].article!.article_date!
+                
+                cell.dateLabel.text = date.dashedStringFromDate()
+            }
+
             return cell
         }else{
             // Display ProductCell
@@ -218,7 +244,11 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         }else if results[indexx].article != nil{
             // visit article url
             self.selected_article = results[indexx].article!
-            self.visit_article(url: results[indexx].article!.article_url!)
+            if results[indexx].article!.article_url != nil{
+                self.visit_article(url: results[indexx].article!.article_url!)
+            }else{
+                print("ITS NIL")
+            }
         }
         tableview.deselectRow(at: indexPath, animated: true)
         
@@ -234,7 +264,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             if offset > 0{
                 offset = offset * -1
             }
-            let up = CGAffineTransform(translationX: 0, y: -136)//1 * (offset))
+            let up = CGAffineTransform(translationX: 0, y: -83)//1 * (offset)) //originally 136 (1/18/17)
             UIView.animate(withDuration: 0.600, animations: {
                 self.header?.transform = up
             })
@@ -353,6 +383,15 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
                             if article_url != nil{
                                 a.article_url = "\(article_url!)"
                             }
+                            var article_date = article["article_date"] as? String
+                            if article_date != nil{
+                                let dateFormatter = DateFormatter()
+                                dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+                                dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+                                let date = dateFormatter.date(from: article_date!)
+                                print("date: \(date)")
+                                a.article_date = date!
+                            }
                             self.articles.append(a)
                             var result = Searchable()
                             result.article = a
@@ -372,7 +411,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func get_handpicked_articles(){
         self.results.removeAll()
-        
+        print("Starting Handpicked_Query")
         let realm = try! Realm()
         var user = realm.objects(User).first
         if user != nil && user?.access_token != nil && user?.client_token != nil{
@@ -380,7 +419,9 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
                 "access_token": user!.client_token!,
                 "utoken": user!.access_token!
             ]
-            Alamofire.request("https://secret-citadel-33642.herokuapp.com/api/v1/articles/handpicked_articles", method: .post, parameters: parameters).responseJSON { (response) in
+            Alamofire.request("https://secret-citadel-33642.herokuapp.com/api/v1/topics/handpicked_articles", method: .post, parameters: parameters).responseJSON { (response) in
+                print(response.result.value)
+                print("Handpicked_Query result above")
                 if let articles = response.result.value as? NSArray{
                     for each in articles{
                         if let article = each as? NSDictionary{
@@ -401,6 +442,23 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
                             var article_image_url = article["article_image_url"] as? String
                             if article_image_url != nil{
                                 a.article_image_url = "\(article_image_url!)"
+                            }
+                            var article_url = article["article_url"] as? String
+                            if article_url != nil{
+                                a.article_url = "\(article_url!)"
+                            }
+                            var display_topic = article["display_topic"] as? String
+                            if display_topic != nil{
+                                a.display_topic = "\(display_topic!)"
+                            }
+                            var article_date = article["article_date"] as? String
+                            if article_date != nil{
+                                let dateFormatter = DateFormatter()
+                                dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+                                dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+                                let date = dateFormatter.date(from: article_date!)
+                                print("date: \(date)")
+                                a.article_date = date!
                             }
                             self.articles.append(a)
                             var result = Searchable()
@@ -431,20 +489,35 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             ]
             Alamofire.request("https://secret-citadel-33642.herokuapp.com/api/v1/resources/get_resource", method: .post, parameters: parameters).responseJSON { (response) in
                 //                print(response.result.value!)
-                var resource = "https://secret-citadel-33642.herokuapp.com\(response.result.value!)"
-                print(resource)//https://secret-citadel-33642.herokuapp.com
-                
-                resource = (resource as NSString).replacingOccurrences(of: "https://secret-citadel-33642.herokuapp.com", with: "")
-
-                article.article?.resource_title = resource
-                self.results.append(article)
-                self.tableview.reloadData()
-                print("done -- get_article_resource")
+                if response.result.value != nil{
+                    var resource = "https://secret-citadel-33642.herokuapp.com\(response.result.value!)"
+                    print(resource)//https://secret-citadel-33642.herokuapp.com
+                    
+                    resource = (resource as NSString).replacingOccurrences(of: "https://secret-citadel-33642.herokuapp.com", with: "")
+                    
+                    article.article?.resource_title = resource
+                    self.results.append(article)
+                    if self.selected_handpicked == true{
+                        // shuffle the array
+                        self.results.shuffle()
+                    }else{
+                        // organize by dates
+                        
+                    }
+                    self.tableview.reloadData()
+                    print("done -- get_article_resource")
+                }else{
+                    print("Resource.Article ERROR \(article.article!.id!)")
+                    self.tableview.reloadData()
+                }
             }
         }
     }
     
     
+    func organized_by_dates(){
+        
+    }
 
     func get_products(){
         // intial query, for all topics
@@ -520,8 +593,79 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     
     
+    func check_time_to_get_feedback(){
+        // did user open the app enough times to ask for feedback
+        let realm = try! Realm()
+        var user = realm.objects(User).first
+        if user != nil && user?.access_token != nil && user?.client_token != nil{
+            if user!.launch_count > 15{
+                // see if user has already given feedback, if not ask for it (segue to feedback)
+                self.check_user_feedback()
+            }
+        }
+    }
+    
+    func check_user_feedback(){
+        //see if user has already given feedback
+        let realm = try! Realm()
+        var user = realm.objects(User).first
+        if user != nil && user?.access_token != nil && user?.client_token != nil{
+            let parameters: Parameters = [
+                "access_token": user!.client_token!,
+                "utoken": user!.access_token!
+            ]
+            Alamofire.request("https://secret-citadel-33642.herokuapp.com/api/v1/feedbacks/did_user_give_feedback", method: .post, parameters: parameters).responseJSON { (response) in
+                if let check = response.result.value as? String{
+                    if check == "yes"{
+                        // user has already given feedback
+                    }else if check == "no"{
+                        // ask user for feedback
+                        self.get_feedback()
+                    }
+                    print(response.result.value)
+                }
+            }
+        }
+
+    }
     
     
+    func thanks_for_feedback(){
+        print("Alert thanking the user")
+        // display thanks alert for the user's cooperation
+        let viewController = self.storyboard?.instantiateViewController(withIdentifier: "Feedback-Thanks")
+        viewController!.view.layer.shadowColor = UIColor.black.cgColor
+        viewController!.view.layer.shadowOpacity = 0.6
+        viewController!.view.layer.shadowOffset = CGSize(width: 0, height: 1.7)
+        viewController!.view.layer.shadowRadius = 2
+        
+        let midy = 2
+        let alertPresentation = JellySlideInPresentation(dismissCurve: .linear,
+                                                         presentationCurve: .linear,
+                                                         cornerRadius: 4,
+                                                         backgroundStyle: .blur(effectStyle: .dark),
+                                                         jellyness: .jelly,
+                                                         duration: .normal,
+                                                         directionShow: .top,
+                                                         directionDismiss: .top,
+                                                         widthForViewController: .custom(value:self.view.frame.width - 10),
+                                                         heightForViewController: .custom(value:100),
+                                                         horizontalAlignment: .center,
+                                                         verticalAlignment: .top,
+                                                         marginGuards: UIEdgeInsets(top: CGFloat(midy), left: 5, bottom: 30, right: 5))
+        
+        
+        let presentation = alertPresentation
+        self.jellyAnimator = JellyAnimator(presentation:presentation)
+        self.jellyAnimator?.prepare(viewController: viewController!)
+        self.present(viewController!, animated: true, completion: nil)
+        
+        
+        let adelayInSeconds = 4.25
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + adelayInSeconds) {
+            viewController!.dismiss(animated: true, completion: nil)
+        }
+    }
     
     
     func start_loading(){
@@ -612,11 +756,20 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         self.performSegue(withIdentifier: "view article", sender: self)
     }
     
+    func get_feedback(){
+        self.performSegue(withIdentifier: "feedback", sender: self)
+    }
     // MARK: - Navigation
 
     @IBAction func unwind_to_HomeVC(segue : UIStoryboardSegue){
         
     }
+    
+    @IBAction func unwind_from_feedback(segue : UIStoryboardSegue){
+        self.thanks_for_feedback()
+    }
+    
+    
     
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -626,6 +779,10 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             let vc : ArticleViewController = segue.destination as! ArticleViewController
             vc.article_url = selected_article_url!
             vc.article = self.selected_article
+        }
+        if segue.identifier == "feedback"{
+            let vc: FeedbackViewController = segue.destination as! FeedbackViewController
+            vc.from = "home"
         }
     }
     
@@ -644,4 +801,35 @@ extension UIView {
     }
 }
 
+extension Foundation.Date {
+    func dashedStringFromDate() -> String {
+        let dateFormatter = DateFormatter()
+        let date = self
+        dateFormatter.dateFormat = "MMMM d"
+        return dateFormatter.string(from: date)
+    }
+}
 
+extension MutableCollection where Indices.Iterator.Element == Index {
+    /// Shuffles the contents of this collection.
+    mutating func shuffle() {
+        let c = count
+        guard c > 1 else { return }
+        
+        for (firstUnshuffled , unshuffledCount) in zip(indices, stride(from: c, to: 1, by: -1)) {
+            let d: IndexDistance = numericCast(arc4random_uniform(numericCast(unshuffledCount)))
+            guard d != 0 else { continue }
+            let i = index(firstUnshuffled, offsetBy: d)
+            swap(&self[firstUnshuffled], &self[i])
+        }
+    }
+}
+
+extension Sequence {
+    /// Returns an array with the contents of this sequence, shuffled.
+    func shuffled() -> [Iterator.Element] {
+        var result = Array(self)
+        result.shuffle()
+        return result
+    }
+}

@@ -14,6 +14,8 @@ class Article {
     var title : String?
     var desc : String?
     var article_url : String?
+    var article_date : Date?
+    var display_topic : String?
     var article_image_url : String?
     var article_image : UIImage?
     var resource_title : String? // Title of Resource
