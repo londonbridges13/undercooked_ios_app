@@ -49,7 +49,7 @@ class SuggestionAlertViewController: UIViewController, UITextViewDelegate {
         doneToolbar.barStyle = UIBarStyle.blackTranslucent
         
         var flexSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil)
-        var done: UIBarButtonItem = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.done, target: self, action: #selector(SuggestionAlertViewController.done))
+        var done: UIBarButtonItem = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.done, target: self, action: #selector(SuggestionAlertViewController.done_2))
         
         var items = [UIBarButtonItem]()
         items.append(flexSpace)
@@ -61,6 +61,10 @@ class SuggestionAlertViewController: UIViewController, UITextViewDelegate {
         self.textView.inputAccessoryView = doneToolbar
     }
 
+    func done_2(){
+        // this sends actions from the okayButton so the the FeedbackViewController closes aswell
+        self.okayButton.sendActions(for: .touchUpInside)
+    }
     
     func done(){
         // send suggestion, then dismiss vc

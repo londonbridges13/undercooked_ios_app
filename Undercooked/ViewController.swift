@@ -21,6 +21,7 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.isHeroEnabled = true
         // Do any additional setup after loading the view, typically from a nib.
         self.start_loading()
         var delayInSeconds = 0.65
@@ -89,15 +90,17 @@ class ViewController: UIViewController {
                             print("Grabbed Topics for Requery")
                         }
                     }
-                }
-                // run the other functions
-                var delayInSeconds = 0.15
-                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + delayInSeconds) {
-                    self.check_for_user()
+                    // run the other functions
+                    var delayInSeconds = 0.15
+                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + delayInSeconds) {
+                        self.has_connection = true
+                        self.check_for_user()
+                    }
                 }
             }
         }else{
             //no user
+            print("no user")
             self.check_for_user()
         }
 
@@ -233,10 +236,11 @@ class ViewController: UIViewController {
             self.actIndi = NVActivityIndicatorView(frame: frame, type: .lineScale, color: UIColor.white, padding: 3)
             self.actIndi!.startAnimating()
             self.actIndi!.alpha = 0
-            
+
             loadview.addSubview(self.actIndi!)
             
             self.actIndi!.fadeIn(duration: 0.2)
+
         }
         
         delayInSeconds = 1.25

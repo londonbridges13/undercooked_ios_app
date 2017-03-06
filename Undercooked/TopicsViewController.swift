@@ -53,6 +53,7 @@ class TopicsViewController: UIViewController, UITableViewDelegate, UITableViewDa
         if topics[indexPath.row].topic_image_url != nil{
             cell.download_image(image_url: topics[indexPath.row].topic_image_url!)
         }
+        cell.topicImageView.layer.cornerRadius = 4
         
         tableview.rowHeight = UITableViewAutomaticDimension
         

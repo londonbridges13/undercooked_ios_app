@@ -55,7 +55,9 @@ class SelectTopicViewController: UIViewController, UICollectionViewDelegate, UIC
         if topics[indexPath.row].title != nil{
             cell.topicLabel.text = topics[indexPath.row].title!
         }
-        cell.topicImageView.layer.cornerRadius = 4
+        cell.layoutIfNeeded()
+
+       
 //        cell.topicImageView.layer.masksToBounds = true
         
         return cell

@@ -8,6 +8,7 @@
 
 import UIKit
 import Kingfisher
+import Hero
 
 class TopicDetailViewController: UIViewController {
 
@@ -31,10 +32,11 @@ class TopicDetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        topicImageView.layer.cornerRadius = 4
-        topicImageView.layer.masksToBounds = true
         
+        topicImageView.layer.masksToBounds = true
+        topicImageView.clipsToBounds = true
+        topicImageView.layer.cornerRadius = 4
+
         self.add_removeButton.layer.cornerRadius = 4
         self.closeButton.addTarget(self, action: #selector(TopicDetailViewController.close_view), for: .touchUpInside)
         self.add_removeButton.addTarget(self, action: #selector(TopicDetailViewController.close_view), for: .touchUpInside)

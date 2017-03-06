@@ -21,7 +21,7 @@ class SignUpInViewController: UIViewController, AlertOnboardingDelegate {
 
     var arrayOfImage = ["welcome","onboard1", "onboard2", "Go"]
     var arrayOfTitle = ["Welcome to Undercooked","Select Your Favorite Topics", "Read Interesting Articles", "Get Started"]
-    var arrayOfDescription = ["Hope you enjoy insightful entertaining articles. \n That's all we've got.","We have a wide range of topics to choose from. \n Sweets, Vegan, Health and Nutrition, and more","Enjoy Stories, Gather Recipes, Share the fun","Sign Up and Get Cooking in Seconds!"]
+    var arrayOfDescription = ["Read the best articles on food.","We have a wide range of topics to choose from. \n Sweets, Vegan, Health and Nutrition, and more","Enjoy Stories, Gather Recipes, Share the fun","Sign Up and Get Started in Seconds!"]
     
     
     override func viewDidLoad() {

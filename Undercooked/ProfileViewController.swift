@@ -213,10 +213,12 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             ]
             Alamofire.request("https://secret-citadel-33642.herokuapp.com/api/v1/users/profile_pic", method: .post, parameters: parameters).responseJSON { (response) in
 //                print(response.result.value!)
-                self.profile_pic_url = "\(response.result.value!)" // changed for amazon
-                print(self.profile_pic_url)
-                self.tableview.reloadData()
-                print("done")
+                if response.result.value != nil{
+                    self.profile_pic_url = "\(response.result.value!)" // changed for amazon
+                    print(self.profile_pic_url)
+                    self.tableview.reloadData()
+                    print("done")
+                }
             }
         }
 
@@ -243,7 +245,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
                         self.username = name!
                     }
                     self.tableview.reloadData()
-                    print(response.result.value!)
+                    //print(response.result.value!)
                     print("done getting username")
                 }
             }
@@ -263,48 +265,50 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
                 "utoken": user!.access_token!
             ]
             Alamofire.request("https://secret-citadel-33642.herokuapp.com/api/v1/articles/likedarticles", method: .post, parameters: parameters).responseJSON { (response) in
-                if let articles = response.result.value as? NSArray{
-                    for each in articles{
-                        if let article = each as? NSDictionary{
-                            // Inside Article
-                            var a = Article()
-                            var id = article["id"] as? Int
-                            if id != nil{
-                                a.id = id!
+                if  response.result.value != nil{
+                    if let articles = response.result.value as? NSArray{
+                        for each in articles{
+                            if let article = each as? NSDictionary{
+                                // Inside Article
+                                var a = Article()
+                                var id = article["id"] as? Int
+                                if id != nil{
+                                    a.id = id!
+                                }
+                                var title = article["title"] as? String
+                                if title != nil{
+                                    a.title = title!
+                                }
+                                var desc = article["desc"] as? String
+                                if desc != nil{
+                                    a.desc = desc!
+                                }
+                                var article_image_url = article["article_image_url"] as? String
+                                if article_image_url != nil{
+                                    a.article_image_url = "\(article_image_url!)"
+                                }
+                                var article_url = article["article_url"] as? String
+                                if article_url != nil{
+                                    a.article_url = "\(article_url!)"
+                                }
+                                var article_date = article["article_date"] as? String
+                                if article_date != nil{
+                                    let dateFormatter = DateFormatter()
+                                    dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+                                    dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+                                    let date = dateFormatter.date(from: article_date!)
+                                    print("date: \(date)")
+                                    a.article_date = date!
+                                }
+                                
+                                //                            self.articles.append(a)
+                                var result = Searchable()
+                                result.article = a
+                                self.get_article_resource(article: result)
+                                print(a.desc)
+                                print("\(self.results.count)")
+                                self.tableview.reloadData()
                             }
-                            var title = article["title"] as? String
-                            if title != nil{
-                                a.title = title!
-                            }
-                            var desc = article["desc"] as? String
-                            if desc != nil{
-                                a.desc = desc!
-                            }
-                            var article_image_url = article["article_image_url"] as? String
-                            if article_image_url != nil{
-                                a.article_image_url = "\(article_image_url!)"
-                            }
-                            var article_url = article["article_url"] as? String
-                            if article_url != nil{
-                                a.article_url = "\(article_url!)"
-                            }
-                            var article_date = article["article_date"] as? String
-                            if article_date != nil{
-                                let dateFormatter = DateFormatter()
-                                dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-                                dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-                                let date = dateFormatter.date(from: article_date!)
-                                print("date: \(date)")
-                                a.article_date = date!
-                            }
-
-//                            self.articles.append(a)
-                            var result = Searchable()
-                            result.article = a
-                            self.get_article_resource(article: result)
-                            print(a.desc)
-                            print("\(self.results.count)")
-                            self.tableview.reloadData()
                         }
                     }
                 }
@@ -325,16 +329,18 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
                 "uarticle": article.article!.id!
             ]
             Alamofire.request("https://secret-citadel-33642.herokuapp.com/api/v1/resources/get_resource", method: .post, parameters: parameters).responseJSON { (response) in
-                //                print(response.result.value!)
-                var resource = "https://secret-citadel-33642.herokuapp.com\(response.result.value!)"
-                print(resource)//https://secret-citadel-33642.herokuapp.com
-                
-                resource = (resource as NSString).replacingOccurrences(of: "https://secret-citadel-33642.herokuapp.com", with: "")
-                
-                article.article?.resource_title = resource
-                self.results.append(article)
-                self.tableview.reloadData()
-                print("done -- get_article_resource")
+                if response.result.value != nil{
+                    //                print(response.result.value!)
+                    var resource = "https://secret-citadel-33642.herokuapp.com\(response.result.value!)"
+                    print(resource)//https://secret-citadel-33642.herokuapp.com
+                    
+                    resource = (resource as NSString).replacingOccurrences(of: "https://secret-citadel-33642.herokuapp.com", with: "")
+                    
+                    article.article?.resource_title = resource
+                    self.results.append(article)
+                    self.tableview.reloadData()
+                    print("done -- get_article_resource")
+                }
             }
         }
     }

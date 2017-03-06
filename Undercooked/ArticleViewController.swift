@@ -40,7 +40,9 @@ class ArticleViewController: ScrollingNavigationViewController, UIWebViewDelegat
     var article : Article?
     var action: String?
     var like_count: Int?
-    
+    var reading_time = 0 // seconds
+    var timer = Timer()
+
 //    let colors = [
 //        DotColors(first: color(0x7DC2F4), second: color(0xE2264D)),
 //        DotColors(first: color(0xF8CC61), second: color(0x9BDFBA)),
@@ -66,6 +68,8 @@ class ArticleViewController: ScrollingNavigationViewController, UIWebViewDelegat
         let requestURL = URL(string:url)
         let request = URLRequest(url: requestURL!)
         webV.loadRequest(request as URLRequest)
+        
+        self.track_reading()
         
         var adelayInSeconds = 0.325
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + adelayInSeconds) {
@@ -104,6 +108,12 @@ class ArticleViewController: ScrollingNavigationViewController, UIWebViewDelegat
         // Do any additional setup after loading the view.
     }
 
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        // Stop timer, send reading time
+        self.send_reading_time()
+    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -311,6 +321,37 @@ class ArticleViewController: ScrollingNavigationViewController, UIWebViewDelegat
         }
     }
     
+    func track_reading(){
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.updateCounting), userInfo: nil, repeats: true)
+    }
+    
+    
+    func updateCounting(){
+        self.reading_time += 1
+        print("Updated Reading Time: \(self.reading_time)")
+    }
+    
+    func send_reading_time(){
+        // send time to timer
+        let realm = try! Realm()
+        var user = realm.objects(User).first
+        if user != nil && user?.access_token != nil && user?.client_token != nil{
+            let parameters: Parameters = [
+                "access_token": user!.client_token!,
+                "utoken": user!.access_token!,
+                "uarticle" : article!.id!,
+                "utimer" : self.reading_time
+            ]
+            Alamofire.request("https://secret-citadel-33642.herokuapp.com/api/v1/users/add_reading_time", method: .post, parameters: parameters).responseJSON { (response) in
+                if let result = response.result.value as? String{
+                    print(result)
+                }
+            }
+        }
+        // Stop Timer
+        timer.invalidate()
+        
+    }
     
     func unwind_home(){
         unwind_homeVC_button.sendActions(for: .touchUpInside)

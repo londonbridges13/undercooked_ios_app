@@ -39,6 +39,7 @@ class FeedbackViewController: UIViewController {
         
         if from == "home"{
             navButton.addTarget(self, action: "go_back_home", for: .touchUpInside)
+            navButton.alpha = 0 // remove the back button, the user must give feedback
         }else if from == "settings"{
             navButton.addTarget(self, action: "go_back_setting", for: .touchUpInside)
         }
@@ -128,6 +129,7 @@ class FeedbackViewController: UIViewController {
         // dismiss the FeedbackViewController
         self.dismiss(animated: true, completion: nil)
     }
+    
     
 
     func go_back_home(){

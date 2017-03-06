@@ -16,6 +16,8 @@ target 'Undercooked' do
 	pod 'FaveButton' 
 	pod 'PullToMakeSoup', '~> 2.0'
 	pod 'ImagePicker'
+	pod 'Hero', :git => 'https://github.com/lkzhao/Hero.git'
+
 
 
   target 'UndercookedTests' do

@@ -194,7 +194,7 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
             mailComposer.mailComposeDelegate = self
             
             //Set the subject and message of the email
-            mailComposer.setSubject("Fovi Feedback")
+            mailComposer.setSubject("About Undercooked")
             mailComposer.setMessageBody("\n \n\n\n\n \n\n\n_____________________   \nPhone Version: \(systemVersion),\n App Version: \(version!),\n \(device)", isHTML: false)
             mailComposer.setToRecipients(["undercookedapp@gmail.com"])
             
