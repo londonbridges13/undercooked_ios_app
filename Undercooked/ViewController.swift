@@ -24,6 +24,8 @@ class ViewController: UIViewController {
         self.isHeroEnabled = true
         // Do any additional setup after loading the view, typically from a nib.
         self.start_loading()
+        self.set_new_token()
+
         var delayInSeconds = 0.65
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + delayInSeconds) {
 //            self.check_for_user()
@@ -35,6 +37,19 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    func set_new_token(){
+        // by signing
+        let realm = try! Realm()
+        var user = realm.objects(User).first
+        if user != nil{
+            // Check on credentials
+            if user!.email != nil && user!.password != nil && user!.client_token != nil{
+                self.request_sign_in(email: user!.email!, password: user!.password!, access_token: user!.client_token!)
+            }
+        }
+    }
+    
 
     func check_for_user(){
         let realm = try! Realm()
@@ -91,7 +106,7 @@ class ViewController: UIViewController {
                         }
                     }
                     // run the other functions
-                    var delayInSeconds = 0.15
+                    var delayInSeconds = 0.65
                     DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + delayInSeconds) {
                         self.has_connection = true
                         self.check_for_user()
