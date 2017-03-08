@@ -99,6 +99,8 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         }else{
             let cell: Topic_CollectionCell = collectionview.dequeueReusableCell(withReuseIdentifier: "HeadTopic_CollectionCell", for: indexPath) as! Topic_CollectionCell
             
+            cell.topicImageView.image = UIImage(named: "handpicked")
+
             cell.topicImageView.layer.shadowColor = UIColor.black.cgColor
             cell.topicImageView.layer.shadowOpacity = 1
             cell.topicImageView.layer.shadowOffset = CGSize.zero
