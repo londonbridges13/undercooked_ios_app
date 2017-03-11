@@ -2,6 +2,8 @@ PODS:
   - Alamofire (4.2.0)
   - AMScrollingNavbar (3.0.0)
   - FaveButton (2.0.2)
+  - Hero (0.3.3)
+  - ImagePicker (2.0.0)
   - Jelly (1.0.2)
   - Kingfisher (3.2.1)
   - NVActivityIndicatorView (3.0)
@@ -19,6 +21,8 @@ DEPENDENCIES:
   - Alamofire (~> 4.0)
   - AMScrollingNavbar
   - FaveButton
+  - Hero (from `https://github.com/lkzhao/Hero.git`)
+  - ImagePicker
   - Jelly
   - Kingfisher (~> 3.0)
   - NVActivityIndicatorView
@@ -26,10 +30,21 @@ DEPENDENCIES:
   - RAMPaperSwitch (~> 2.0.0)
   - RealmSwift
 
+EXTERNAL SOURCES:
+  Hero:
+    :git: https://github.com/lkzhao/Hero.git
+
+CHECKOUT OPTIONS:
+  Hero:
+    :commit: 66c349b77ffd079b224987f9429217e28eac5fb8
+    :git: https://github.com/lkzhao/Hero.git
+
 SPEC CHECKSUMS:
   Alamofire: aa2e09d871c9160ac53c90e83c68064a94e3dfbe
   AMScrollingNavbar: aa894c559c80ffa917d0fdc40d8b42be7c6efe15
   FaveButton: e26f7964669b4befda7d92a6779be7b2a70ab161
+  Hero: d0f6186f2deb03ce85e9e5bf7f202538b0a57dda
+  ImagePicker: 81175d36c2852cb543cb4f5d6c19e28f3e8d90eb
   Jelly: a2d6e756245bd678ebdaf5fd3923b3a43a87453f
   Kingfisher: 64ef28c6d3d6f344e3ae2d7f5c9da80439505d99
   NVActivityIndicatorView: 81953b5e65093ba79edf4fe7268e002039ca5268
@@ -39,6 +54,6 @@ SPEC CHECKSUMS:
   Realm: bc829ad0ef3d4eea70c34cfcc3b1704d18d50df1
   RealmSwift: a4d4abbf0088c337cab5b738054395842e4b3052
 
-PODFILE CHECKSUM: c61d66d0d8e79617e77f778c03635c1b4e543127
+PODFILE CHECKSUM: 0535ddddd162e50bea9547b0c325d91874f5a7e3
 
 COCOAPODS: 1.2.0.beta.1
