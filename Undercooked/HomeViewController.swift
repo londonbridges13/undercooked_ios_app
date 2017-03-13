@@ -14,11 +14,12 @@ import Alamofire
 import Kingfisher
 import PullToMakeSoup
 import Foundation
+//import RAReorderableLayout
 
-class HomeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource {
+class HomeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, RAReorderableLayoutDelegate, RAReorderableLayoutDataSource {// UICollectionViewDelegate, UICollectionViewDataSource {
 
     @IBOutlet var tableview: UITableView!
-    @IBOutlet var collectionview: UICollectionView!
+    @IBOutlet var collectionView: UICollectionView!
     @IBOutlet var header: UIView!
     @IBOutlet var topicLabel : UILabel!
     
@@ -34,12 +35,17 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     var topic_viewed = "Handpicked"
     var selected_article_url : String?
     var selected_article : Article?
+    //var dragAndDropManager : KDDragAndDropManager?
 
-    override func viewDidLoad() {
+    override func viewDidLoad(){
         super.viewDidLoad()
         
-        self.collectionview.delegate = self
-        self.collectionview.dataSource = self
+       self.collectionView.delegate = self
+       self.collectionView.dataSource = self
+        (collectionView.collectionViewLayout as! RAReorderableLayout).scrollDirection = .horizontal
+
+       
+        set_first_topic()
         self.tableview.delegate = self
         self.tableview.dataSource = self
         self.topicLabel.text = self.selected_topic
@@ -53,7 +59,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.check_for_requery()
+       // self.check_for_requery() no longer needed 
         
 //        tableview.addPullToRefresh(PullToMakeSoup(at: .top)) {
 //            // action to be performed (pull data from some source)
@@ -78,16 +84,21 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         get_handpicked_articles()
     }
     
-    //collectionview
+    //collectionView
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.topics.count + 1 // for handpicked articles
+        return self.topics.count  // for handpicked articles
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        var index = indexPath.row - 1 // use this for all other indexpaths, but not the first
+        var index = indexPath.row //+ 1 // use this for all other indexpaths, but not the first
         
-        if indexPath.row == 0{
-            let cell: Topic_CollectionCell = collectionview.dequeueReusableCell(withReuseIdentifier: "HeadTopic_CollectionCell", for: indexPath) as! Topic_CollectionCell
+        if topics[indexPath.row].title == "Handpicked"{ // this line is important, it allows for the handpicked query to move as the others
+            let cell: Topic_CollectionCell = collectionView.dequeueReusableCell(withReuseIdentifier: "HeadTopic_CollectionCell", for: indexPath) as! Topic_CollectionCell
             
             
             cell.topicLabel.text = "Handpicked"
@@ -97,7 +108,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 
             return cell
         }else{
-            let cell: Topic_CollectionCell = collectionview.dequeueReusableCell(withReuseIdentifier: "HeadTopic_CollectionCell", for: indexPath) as! Topic_CollectionCell
+            let cell: Topic_CollectionCell = collectionView.dequeueReusableCell(withReuseIdentifier: "HeadTopic_CollectionCell", for: indexPath) as! Topic_CollectionCell
             
             cell.topicImageView.image = UIImage(named: "handpicked")
 
@@ -118,14 +129,15 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
                 let url = URL(string: "\(self.topics[index].topic_image_url!)")
                 cell.topicImageView.kf.setImage(with: url)
             }
+            
             return cell
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        var index = indexPath.row - 1 // use this for all other indexpaths, but not the first
+        var index = indexPath.row //+ 1 // use this for all other indexpaths, but not the first
         
-        if indexPath.row == 0{
+        if topics[indexPath.row].title == "Handpicked"{
             var handpicked = "Handpicked"
             self.topic_viewed = handpicked//self.topics[index].title!
             self.selected_topic = handpicked//self.topics[index].title!
@@ -167,6 +179,49 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             }
         }
     }
+    
+
+    func collectionView(_ collectionView: UICollectionView, at: IndexPath, willMoveTo toIndexPath: IndexPath) {
+        print()
+    }
+    
+    
+    func collectionView(_ collectionView: UICollectionView, at: IndexPath, didMoveTo toIndexPath: IndexPath) {
+        
+        let new = self.topics[toIndexPath.row]
+        let old = self.topics[at.row]
+        print(old.title)
+        print(new.title)
+        topics.remove(at: at.row )
+        topics.insert(old, at: toIndexPath.row )
+        
+        update_topic_order()
+    }
+    
+    func scrollTrigerEdgeInsetsIncollectionView(_ collectionView: UICollectionView) -> UIEdgeInsets {
+        return UIEdgeInsetsMake(0, 50, 0, 50)
+    }
+    
+    func scrollSpeedValueIncollectionView(_ collectionView: UICollectionView) -> CGFloat {
+        return 15.0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: 77, height: 85)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsetsMake(3, 5, 0, 5)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 5.0
+    }
+
+
+    
+
+
     
     //tableview
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -284,6 +339,43 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 
     
     
+    func update_topic_order(){
+        // save the user's topic order
+        // send a request, used 0 for the id of Handpicked topic
+        // first grab all the topics' ids
+        var ids = [Int]()
+        for each in topics{
+            if each.id != nil{
+                ids.append(each.id!)
+            }
+        }
+        
+        let realm = try! Realm()
+        var user = realm.objects(User).first
+        if user != nil && user?.access_token != nil && user?.client_token != nil{
+            // API Call for user profile pic, might not have one
+            let parameters: Parameters = [
+                "access_token": user!.client_token!,
+                "utoken": user!.access_token!,
+                "topic_ids": ids
+            ]
+            Alamofire.request("https://secret-citadel-33642.herokuapp.com/api/v3/users/update_topic_order", method: .post, parameters: parameters).responseJSON { (response) in
+                // no response needed
+                print(response.result.value)
+            }
+        }
+        
+    }
+    
+    
+    func set_first_topic(){
+        var first_topic = Topic() // handpicked
+        first_topic.title = "Handpicked"
+        first_topic.id = 0
+        self.topics.append(first_topic)
+
+    }
+    
     func get_topics(){
         let realm = try! Realm()
         var user = realm.objects(User).first
@@ -293,7 +385,8 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
                 "access_token": user!.client_token!,
                 "utoken": user!.access_token!
             ]
-            Alamofire.request("https://secret-citadel-33642.herokuapp.com/api/v1/topics/get_topics", method: .post, parameters: parameters).responseJSON { (response) in
+           // Alamofire.request("https://secret-citadel-33642.herokuapp.com/api/v1/topics/get_topics", method: .post, parameters: parameters).responseJSON { (response) in
+            Alamofire.request("https://secret-citadel-33642.herokuapp.com/api/v3/topics/get_topics", method: .post, parameters: parameters).responseJSON { (response) in
                 if let topicss = response.result.value as? NSArray{
                     for each in topicss{
                         if let topic = each as? NSDictionary{
@@ -315,7 +408,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
                             self.get_topic_image(topic: t)
                             print(t)
                             print("done -- get_topics")
-                            self.collectionview.reloadData()
+                            self.collectionView.reloadData()
                         }
                     }
                 }
@@ -342,7 +435,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
                 print(topic_image_url)
                 topic.topic_image_url = topic_image_url
                 self.topics.append(topic)
-                self.collectionview.reloadData()
+                self.collectionView.reloadData()
                 print("done -- get_topic_image")
             }
         }
@@ -563,10 +656,12 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
                     // we've collected all of the user's topic_ids. Now we compare them.
                     var reload = false
                     for each in self.topics{
-                        if topic_ids.contains(each.id!) == false{
-                            // contains new topic requery everything
-                            reload = true
-                            print("New Topic Found. Should Requery Everything")
+                        if each.id != nil || each.id == 0{ // because it is the topic
+                            if topic_ids.contains(each.id!) == false{
+                                // contains new topic requery everything
+                                reload = true
+                                print("New Topic Found. Should Requery Everything")
+                            }
                         }
                     }
                     if reload == true{
@@ -590,6 +685,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         self.articles.removeAll()
         self.tableview.reloadData()
         
+        self.set_first_topic()
         self.get_topics()
     }
     

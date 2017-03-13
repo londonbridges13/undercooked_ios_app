@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3E2FDF101E75A04F00F99DF5 /* KDDragAndDropManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E2FDF0E1E75A04F00F99DF5 /* KDDragAndDropManager.swift */; };
+		3E2FDF121E75DD8E00F99DF5 /* RAReorderableLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E2FDF111E75DD8E00F99DF5 /* RAReorderableLayout.swift */; };
 		3E3A06871E0272F5005745E9 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E3A06861E0272F3005745E9 /* User.swift */; };
 		3E45F6451DECB491000A66A4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E45F6441DECB491000A66A4 /* AppDelegate.swift */; };
 		3E45F6471DECB492000A66A4 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E45F6461DECB492000A66A4 /* ViewController.swift */; };
@@ -79,6 +81,8 @@
 		0ECA9BBADA8EC384397C0A75 /* Pods-Undercooked.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Undercooked.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Undercooked/Pods-Undercooked.debug.xcconfig"; sourceTree = "<group>"; };
 		30F4E537CF7A7ABFAA369BE8 /* Pods_UndercookedUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UndercookedUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BF130561FE9C470D56D59CE /* Pods_Undercooked.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Undercooked.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3E2FDF0E1E75A04F00F99DF5 /* KDDragAndDropManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KDDragAndDropManager.swift; sourceTree = "<group>"; };
+		3E2FDF111E75DD8E00F99DF5 /* RAReorderableLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RAReorderableLayout.swift; sourceTree = "<group>"; };
 		3E3A06861E0272F3005745E9 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		3E45F6411DECB48F000A66A4 /* Undercooked.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Undercooked.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E45F6441DECB491000A66A4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -210,6 +214,8 @@
 				3E9BF2211E105BFA00625ACE /* Searchable.swift */,
 				3E9BF2231E105C2F00625ACE /* Product.swift */,
 				3E9BF1AE1E0A1ADD00625ACE /* Topic.swift */,
+				3E2FDF111E75DD8E00F99DF5 /* RAReorderableLayout.swift */,
+				3E2FDF0E1E75A04F00F99DF5 /* KDDragAndDropManager.swift */,
 			);
 			path = Undercooked;
 			sourceTree = "<group>";
@@ -694,6 +700,7 @@
 				3EB6EC8F1DEFC00300F99BF5 /* OnboardResourceTableViewCell.swift in Sources */,
 				3EDA1ECD1E1EE87100C25B7B /* SettingsViewController.swift in Sources */,
 				3EB6EC921DEFC7E000F99BF5 /* SignUpInAlertViewController.swift in Sources */,
+				3E2FDF121E75DD8E00F99DF5 /* RAReorderableLayout.swift in Sources */,
 				3E9BF26B1E182AD300625ACE /* DetailTopicTableViewCell.swift in Sources */,
 				3EB6EC9A1DF0A08B00F99BF5 /* SelectTopicViewController.swift in Sources */,
 				3EB6EC8D1DEFBA6A00F99BF5 /* SignUpInViewController.swift in Sources */,
@@ -717,6 +724,7 @@
 				3E9BF1B01E0A1ADD00625ACE /* Topic.swift in Sources */,
 				3EDCC0971E33E77F00F5E7FD /* AlertPageViewController.swift in Sources */,
 				3E3A06871E0272F5005745E9 /* User.swift in Sources */,
+				3E2FDF101E75A04F00F99DF5 /* KDDragAndDropManager.swift in Sources */,
 				3E70272E1DF4B7DA007FF70E /* ProfileViewController.swift in Sources */,
 				3EB6EC9F1DF0DDB600F99BF5 /* TabViewController.swift in Sources */,
 				3E45F6451DECB491000A66A4 /* AppDelegate.swift in Sources */,
@@ -874,7 +882,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Undercooked/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.lyndonsamualmckay.Undercooked;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -893,7 +901,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Undercooked/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.lyndonsamualmckay.Undercooked;
 				PRODUCT_NAME = "$(TARGET_NAME)";
