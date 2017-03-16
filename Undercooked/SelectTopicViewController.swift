@@ -42,7 +42,7 @@ class SelectTopicViewController: UIViewController, UICollectionViewDelegate, UIC
     
     //collectionview
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        topicCountLabel.text = "\(self.my_topics.count)/3"
+        topicCountLabel.text = "\(self.my_topics.count)/5"
         return topics.count
     }
     
@@ -138,7 +138,7 @@ class SelectTopicViewController: UIViewController, UICollectionViewDelegate, UIC
     
 
     func not_enough_alert(){
-        let alertController = UIAlertController(title: "Hold up!", message: "You must select 3 Topics", preferredStyle: UIAlertControllerStyle.alert)
+        let alertController = UIAlertController(title: "Hold up!", message: "Select up to 5 Topics", preferredStyle: UIAlertControllerStyle.alert)
         
         let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default)
         {
@@ -252,7 +252,7 @@ class SelectTopicViewController: UIViewController, UICollectionViewDelegate, UIC
     }
     
     func done_pressed(){
-        if my_topics.count == 3{
+        if my_topics.count <= 5 && my_topics.count >= 3{
             self.submit_topics()
         }else{
             // user needs to add more topics, or they added too many

@@ -16,109 +16,22 @@ class ViewController: UIViewController {
 
     var actIndi : NVActivityIndicatorView?
     var jellyAnimator: JellyAnimator?
-    var has_topics = false
-    var has_connection = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.isHeroEnabled = true
         // Do any additional setup after loading the view, typically from a nib.
         self.start_loading()
-        self.set_new_token()
 
         var delayInSeconds = 0.65
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + delayInSeconds) {
-//            self.check_for_user()
-            self.check_for_topics()
+            self.check_everything()
         }
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-    }
-    
-    func set_new_token(){
-        // by signing
-        let realm = try! Realm()
-        var user = realm.objects(User).first
-        if user != nil{
-            // Check on credentials
-            if user!.email != nil && user!.password != nil && user!.client_token != nil{
-                self.request_sign_in(email: user!.email!, password: user!.password!, access_token: user!.client_token!)
-            }
-        }
-    }
-    
-
-    func check_for_user(){
-        let realm = try! Realm()
-        var user = realm.objects(User).first
-        if user != nil{
-            // Check on credentials
-            if user!.email != nil && user!.password != nil && user!.client_token != nil{
-                if has_topics == true {
-                // Sign In again
-                self.request_sign_in(email: user!.email!, password: user!.password!, access_token: user!.client_token!)
-                }else if has_connection == true{ // assures that there was an internet connection and there were no topics.
-                    print("User has no topics")
-                    // segue to Select Topics
-                    self.segue_to_select_topics()
-                }else{
-                    // There is no internet connection
-                    print("There is no internet connection")
-                    self.display_bad_connection_alert()
-                }
-                
-            }else{
-                // Onboarding process, no email or password set
-                print("Onboarding process, no email or password set")
-                self.segue_to_onboarding()
-            }
-        }else{
-            // Onbording process, no user found
-            print("Onboarding process, no user found")
-            self.segue_to_onboarding()
-        }
-    }
-    
-    
-    func check_for_topics(){
-        // Use this to see if the user has selected their topics. This way the Home Tab won't be empty.
-        let realm = try! Realm()
-        var user = realm.objects(User).first
-        if user != nil && user?.access_token != nil && user?.client_token != nil{
-            // API Call for user profile pic, might not have one
-            let parameters: Parameters = [
-                "access_token": user!.client_token!,
-                "utoken": user!.access_token!
-            ]
-            Alamofire.request("https://secret-citadel-33642.herokuapp.com/api/v1/topics/get_topics", method: .post, parameters: parameters).responseJSON { (response) in
-                if let topicss = response.result.value as? NSArray{
-                    for each in topicss{
-                        if let topic = each as? NSDictionary{
-                            var id = topic["id"] as? Int
-                            if id != nil{
-                                self.has_topics = true
-                                self.has_connection = true
-                            }
-                            print("Grabbed Topics for Requery")
-                        }
-                    }
-                    // run the other functions
-                    var delayInSeconds = 0.65
-                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + delayInSeconds) {
-                        self.has_connection = true
-                        self.check_for_user()
-                    }
-                }
-            }
-        }else{
-            //no user
-            print("no user")
-            self.check_for_user()
-        }
-
     }
     
     
@@ -133,31 +46,124 @@ class ViewController: UIViewController {
         ]
         
         Alamofire.request("https://secret-citadel-33642.herokuapp.com/api/v1/users/signin", method: .post, parameters: parameters).responseJSON { (response) in
-            if let result = response.result.value as? NSDictionary{
-                print("recieved user creds")
-
-                var user_token = result["access_token"] as? String
-                if user_token != nil{
-                    // Successfully signed in, segue to Home Tab
-                    print(user_token!)
-                    self.set_user_token(user_token: user_token!)
-                    // Go to Home Tab
-                    self.segue_to_home_tab()
+            
+            // Sign In issue, solution: delay the response
+            var delayInSeconds = 0.25
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + delayInSeconds) {
+                
+                if let result = response.result.value as? NSDictionary{
+                    print("recieved user creds")
+                    //Getting the user's access token
+                    var user_token = result["access_token"] as? String
+                    if user_token != nil{
+                        // Successfully signed in, segue to Home Tab
+                        print(user_token!)
+                        self.set_user_token(user_token: user_token!)
+                        // Go to Home Tab
+                        self.segue_to_home_tab()
+                    }else{
+                        // Invalid Sign In
+                        print("Invalid Email/Password. Sign in again")
+                        // Sign in again
+                        self.sign_in_again()
+                    }
                 }else{
                     // Invalid Sign In
-                    print("Invalid Email/Password. Sign in again")
-                    // Sign in again
-                    self.sign_in_again()
+                    print("No Response...Network Error")
+                    self.display_bad_connection_alert()
                 }
-            }else{
-                // Invalid Sign In
-                print("No Response...Invalid Email/Password. Sign in again")
-                // Sign in again
-                self.sign_in_again()
             }
         }
         
     }
+    
+    
+    func check_everything(){
+        // Check for user, if none send to onboard
+        // if so, Check for topics, if none send to Select topics
+        // if so, Sign in and send her through (to the HomeVC)
+        // this all happens in the function below
+        does_user_exist()
+    }
+    
+    
+    func does_user_exist(){
+        print("Checking for user")
+        var answer : String?
+        let realm = try! Realm()
+        var user = realm.objects(User).first
+        if user != nil && user?.access_token != nil && user?.client_token != nil{
+            let parameters: Parameters = [
+                "access_token": user!.client_token!,
+                "uemail": user!.email!
+            ]
+            print("User Token: \(user!.access_token!)")
+            Alamofire.request("https://secret-citadel-33642.herokuapp.com/api/v3/users/does_user_exist", method: .post, parameters: parameters).responseJSON { (response) in
+                if response.result.value != nil{
+                    if let result = response.result.value as? String {
+                        print("Does User Exist: \(result)")
+                        answer = result
+                        if answer == "no"{
+                            self.segue_to_onboarding()
+                        }else{
+                            self.does_user_have_topics()
+                        }
+                    }
+                }
+            }
+        }else{
+            // no user, go to onboard
+            self.segue_to_onboarding()
+            
+        }
+        
+    }
+    
+
+    func does_user_have_topics(){
+        print("Checking for user")
+        var answer : String?
+        let realm = try! Realm()
+        var user = realm.objects(User).first
+        if user != nil && user?.access_token != nil && user?.client_token != nil{
+            let parameters: Parameters = [
+                "access_token": user!.client_token!,
+                "uemail": user!.email!
+            ]
+            print("User Token: \(user!.access_token!)")
+            Alamofire.request("https://secret-citadel-33642.herokuapp.com/api/v3/users/does_user_have_topics", method: .post, parameters: parameters).responseJSON { (response) in
+                if response.result.value != nil{
+                    if let result = response.result.value as? String {
+                        print("Does User Have Topics: \(result)")
+                        answer = result
+                        if answer == "no"{
+                            self.segue_to_select_topics()
+                        }else{
+                            // Make user sign in again, if it goes through, then send her through
+                            self.sign_in_and_proceed()
+//                            self.segue_to_home_tab()
+                        }
+                    }
+                }
+            }
+        }
+        
+    }
+    
+    
+    func sign_in_and_proceed(){
+        let realm = try! Realm()
+        var user = realm.objects(User).first
+        if user != nil{
+            // Check on credentials
+            if user!.email != nil && user!.password != nil && user!.client_token != nil{
+                    // Sign In again
+                    self.request_sign_in(email: user!.email!, password: user!.password!, access_token: user!.client_token!)
+            }
+        }
+    }
+
+    
     
     
     func set_user_token(user_token: String){

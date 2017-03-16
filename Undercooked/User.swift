@@ -22,6 +22,9 @@ class User : Object{
     
     dynamic var launch_count = 0 // Displays how often user opens app
     dynamic var user_invited = false // Checks if User has invited friends to use Undercooked
+    dynamic var knows_to_swipe_topics = false // If false, an alert will display in the HomeVC to guide the user on how to view all topics
+    
+    
 //    dynamic var did_finish_selecting_topics = false //Checks whether to sgeue to Select Topics or to Home Tab
 
 }

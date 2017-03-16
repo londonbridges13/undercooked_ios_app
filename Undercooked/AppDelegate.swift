@@ -35,7 +35,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let config =     Realm.Configuration(
             // Set the new schema version. This must be greater than the previously used
             // version (if you've never set a schema version before, the version is 0).
-            schemaVersion: 1,
+            schemaVersion: 2,
             
             // Set the block which will be called automatically when opening a Realm with
             // a schema version lower than the one set above
@@ -45,8 +45,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //                        var value = false
 //                        newObject!["did_finish_selecting_topics"] = value
 //                    }
-                    // Added newer versions here
+                    if oldSchemaVersion < 2 {
+                        var value = false
+                        newObject!["knows_to_swipe_topics"] = value 
+                    }
+//                    Added newer versions here
 //                    if oldSchemaVersion < 2 {
+//
 //                    }
                 }
         }
@@ -118,7 +123,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     if access_token != nil{
                         // Found User, your work is done
                         print("Found User, Your work is done")
-                        
                     }else{
                         print("No User Found")
                         // Sign in again, you would have a user.access_token only if you were signed in before
@@ -181,6 +185,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 user!.client_token = client_token
                 print(user!.email)
                 print(user!.password)
+                print("Launch Count: \(user!.launch_count)")
             }
         }else{
             // No User, Create one

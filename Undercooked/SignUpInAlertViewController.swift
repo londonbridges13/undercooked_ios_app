@@ -66,6 +66,25 @@ class SignUpInAlertViewController: UIViewController, UITextFieldDelegate {
         self.dismiss(animated: true, completion: nil)
     }
     
+    func invalid_entry(){
+
+        invalid_password()
+        invalid_email()
+    }
+    
+    func invalid_password(){
+        let pop_red = UIColor(colorLiteralRed: 255/255, green: 103/255, blue: 102/255, alpha: 1)
+
+        self.passwordView.shake()
+        self.passwordView.layer.borderColor = pop_red.cgColor
+    }
+    
+    func invalid_email(){
+        let pop_red = UIColor(colorLiteralRed: 255/255, green: 103/255, blue: 102/255, alpha: 1)
+
+        self.emailView.shake()
+        self.emailView.layer.borderColor = pop_red.cgColor
+    }
     
     //textfield 
     
@@ -97,12 +116,12 @@ class SignUpInAlertViewController: UIViewController, UITextFieldDelegate {
             }else{
                 // Invalid Password
                 print("Invalid Password")
-                
+                self.invalid_password()
             }
         }else{
             // Invalid Email
             print("Invalid Email")
-            
+            self.invalid_email()
         }
     }
     
@@ -117,12 +136,12 @@ class SignUpInAlertViewController: UIViewController, UITextFieldDelegate {
             }else{
                 // Invalid Password
                 print("Invalid Password")
-                
+                self.invalid_password()
             }
         }else{
             // Invalid Email
             print("Invalid Email")
-            
+            self.invalid_email()
         }
     }
     
@@ -154,7 +173,12 @@ class SignUpInAlertViewController: UIViewController, UITextFieldDelegate {
                 }else{
                     // Invalid Sign In
                     print("Invalid Email/Password")
+                    self.invalid_entry()
                 }
+            }else{
+                // Invalid Sign In
+                print("Invalid Email/Password")
+                self.invalid_entry()
             }
         }
 
@@ -186,6 +210,7 @@ class SignUpInAlertViewController: UIViewController, UITextFieldDelegate {
                 }else{
                     // Invalid Sign In
                     print("Invalid Email/Password")
+                    self.invalid_entry()
                 }
             }
         }
@@ -254,4 +279,13 @@ class SignUpInAlertViewController: UIViewController, UITextFieldDelegate {
     }
     */
 
+}
+extension UIView {
+    func shake() {
+        let animation = CAKeyframeAnimation(keyPath: "transform.translation.x")
+        animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
+        animation.duration = 0.6
+        animation.values = [-20.0, 20.0, -20.0, 20.0, -10.0, 10.0, -5.0, 5.0, 0.0 ]
+        layer.add(animation, forKey: "shake")
+    }
 }

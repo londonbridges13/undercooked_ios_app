@@ -26,7 +26,7 @@ class ProfileCell: UITableViewCell {
         super.awakeFromNib()
         // Initialization code
         profileImageView.image = UIImage(named: "profile_pic")
-        topicsButton.alpha = 0
+//        topicsButton.alpha = 0
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

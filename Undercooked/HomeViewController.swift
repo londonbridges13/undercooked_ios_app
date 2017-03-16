@@ -51,6 +51,8 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         self.topicLabel.text = self.selected_topic
         self.initial_load()
         self.check_time_to_get_feedback()
+        self.inform_user()
+        
         //let adelayInSeconds = 1.25
       //  DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + adelayInSeconds) {
        // }
@@ -696,7 +698,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         let realm = try! Realm()
         var user = realm.objects(User).first
         if user != nil && user?.access_token != nil && user?.client_token != nil{
-            if user!.launch_count > 15{
+            if user!.launch_count > 25{
                 // see if user has already given feedback, if not ask for it (segue to feedback)
                 self.check_user_feedback()
             }
@@ -765,6 +767,57 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
     }
     
+    // Update Alert - Swipe Topics
+    func inform_user(){
+        let realm = try! Realm()
+        let user = realm.objects(User).first
+        if user != nil{
+            if user!.knows_to_swipe_topics == false{
+                // user hasn't been informed of the swiping feature, inform them
+                self.display_guide_for_topics()
+            }
+        }
+    }
+    func display_guide_for_topics(){
+        //Jelly Animation required
+        self.guided_user()
+        let viewController : SwipeAllTopicsAlertViewController = self.storyboard?.instantiateViewController(withIdentifier: "SwipeAllTopicsAlertViewController") as! SwipeAllTopicsAlertViewController
+        
+        
+        var midy = (self.view.frame.height / 2) - (300 / 2)
+        let alertPresentation = JellySlideInPresentation(dismissCurve: .linear,
+                                                         presentationCurve: .linear,
+                                                         cornerRadius: 8,
+                                                         backgroundStyle: .blur(effectStyle: .dark),
+                                                         jellyness: .jellier,
+                                                         duration: .normal,
+                                                         directionShow: .bottom,
+                                                         directionDismiss: .bottom,
+                                                         widthForViewController: .custom(value:265),
+                                                         heightForViewController: .custom(value:310),
+                                                         horizontalAlignment: .center,
+                                                         verticalAlignment: .top,
+                                                         marginGuards: UIEdgeInsets(top: 150, left: 5, bottom: 40, right: 5))
+        
+        
+        let presentation = alertPresentation
+        self.jellyAnimator = JellyAnimator(presentation:presentation)
+        self.jellyAnimator?.prepare(viewController: viewController)
+        self.present(viewController, animated: true, completion: nil)
+        
+
+    }
+    func guided_user(){
+        // save knows_to_swipe_topics, so this alert doesn't show again
+        let realm = try! Realm()
+        let user = realm.objects(User).first
+        if user != nil{
+            try! realm.write{
+                user!.knows_to_swipe_topics = true
+            }
+        }
+    }
+
     
     func start_loading(){
         var yp = view.frame.height / 2 - ((view.bounds.width) / 2) - 50
