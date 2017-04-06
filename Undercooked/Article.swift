@@ -19,6 +19,11 @@ class Article {
     var article_image_url : String?
     var article_image : UIImage?
     var resource_title : String? // Title of Resource
+    var resource : Resource?
+    
+    var likes = 0
+    var user_like = false
+    var set_likes = false // this assures us that the article has grabbed the latest likes and we shouldn't have to reload them
 //    var topics 
 
 }

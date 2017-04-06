@@ -36,6 +36,8 @@
 		3EA8EB181DECC5BF008DD85D /* SanchezSlab.otf in Resources */ = {isa = PBXBuildFile; fileRef = 3EA8EB171DECC5BF008DD85D /* SanchezSlab.otf */; };
 		3EA8EB1A1DEE2BF8008DD85D /* OnboardEventsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EA8EB191DEE2BF8008DD85D /* OnboardEventsViewController.swift */; };
 		3EA8EB201DEE4ACC008DD85D /* OnboardArticleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EA8EB1F1DEE4ACC008DD85D /* OnboardArticleViewController.swift */; };
+		3EB1A6AC1E906C2C0075F628 /* V2ArticleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EB1A6AB1E906C2C0075F628 /* V2ArticleCell.swift */; };
+		3EB1A6AE1E90A2EF0075F628 /* Resource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EB1A6AD1E90A2EE0075F628 /* Resource.swift */; };
 		3EB2175B1E218A58001296E7 /* ChangePasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EB2175A1E218A58001296E7 /* ChangePasswordViewController.swift */; };
 		3EB2175D1E21A490001296E7 /* ChangeNameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EB2175C1E21A490001296E7 /* ChangeNameViewController.swift */; };
 		3EB6EC891DEF42D500F99BF5 /* OnboardResourceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EB6EC881DEF42D500F99BF5 /* OnboardResourceViewController.swift */; };
@@ -117,6 +119,8 @@
 		3EA8EB171DECC5BF008DD85D /* SanchezSlab.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SanchezSlab.otf; sourceTree = "<group>"; };
 		3EA8EB191DEE2BF8008DD85D /* OnboardEventsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardEventsViewController.swift; sourceTree = "<group>"; };
 		3EA8EB1F1DEE4ACC008DD85D /* OnboardArticleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardArticleViewController.swift; sourceTree = "<group>"; };
+		3EB1A6AB1E906C2C0075F628 /* V2ArticleCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = V2ArticleCell.swift; sourceTree = "<group>"; };
+		3EB1A6AD1E90A2EE0075F628 /* Resource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Resource.swift; sourceTree = "<group>"; };
 		3EB2175A1E218A58001296E7 /* ChangePasswordViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChangePasswordViewController.swift; sourceTree = "<group>"; };
 		3EB2175C1E21A490001296E7 /* ChangeNameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChangeNameViewController.swift; sourceTree = "<group>"; };
 		3EB6EC881DEF42D500F99BF5 /* OnboardResourceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardResourceViewController.swift; sourceTree = "<group>"; };
@@ -300,6 +304,7 @@
 				3E9BF2231E105C2F00625ACE /* Product.swift */,
 				3E9BF1AE1E0A1ADD00625ACE /* Topic.swift */,
 				3E3A06861E0272F3005745E9 /* User.swift */,
+				3EB1A6AD1E90A2EE0075F628 /* Resource.swift */,
 			);
 			name = Objects;
 			sourceTree = "<group>";
@@ -381,6 +386,7 @@
 			children = (
 				3EB6ECA21DF13E8600F99BF5 /* TopicHeaderCell.swift */,
 				3EB6ECA61DF1DDE200F99BF5 /* ArticleCell.swift */,
+				3EB1A6AB1E906C2C0075F628 /* V2ArticleCell.swift */,
 				3E5D74B41DF1FCC300955DAE /* ProductCell.swift */,
 			);
 			name = Cells;
@@ -731,9 +737,11 @@
 				3EB6ECA51DF13EE600F99BF5 /* HomeViewController.swift in Sources */,
 				3E9BF2241E105C2F00625ACE /* Product.swift in Sources */,
 				3E9BF2221E105BFA00625ACE /* Searchable.swift in Sources */,
+				3EB1A6AE1E90A2EF0075F628 /* Resource.swift in Sources */,
 				3EB6ECA71DF1DDE200F99BF5 /* ArticleCell.swift in Sources */,
 				3EA8EB1A1DEE2BF8008DD85D /* OnboardEventsViewController.swift in Sources */,
 				3EB6EC971DF09E4400F99BF5 /* TopicDetailViewController.swift in Sources */,
+				3EB1A6AC1E906C2C0075F628 /* V2ArticleCell.swift in Sources */,
 				3E9BF2681E18291B00625ACE /* SwapTopicsViewController.swift in Sources */,
 				3E5D74B51DF1FCC300955DAE /* ProductCell.swift in Sources */,
 				3E7027331DF768CA007FF70E /* ExploreViewController.swift in Sources */,

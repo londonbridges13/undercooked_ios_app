@@ -11,7 +11,7 @@ import AMScrollingNavbar
 import WebKit
 import Alamofire
 import RealmSwift
-import FaveButton
+//import FaveButton
 
 func color(_ rgbColor: Int) -> UIColor{
     return UIColor(
@@ -22,10 +22,10 @@ func color(_ rgbColor: Int) -> UIColor{
     )
 }
 
-class ArticleViewController: ScrollingNavigationViewController, UIWebViewDelegate, FaveButtonDelegate {
+class ArticleViewController: ScrollingNavigationViewController, UIWebViewDelegate {
 
     @IBOutlet var bottomView : UIView!
-    @IBOutlet var likeButton : FaveButton!
+    @IBOutlet var likeButton : UIButton!
     @IBOutlet var likeCountLabel : UILabel!
     @IBOutlet var shareButton : UIButton!
     @IBOutlet var navButton : UIButton!
@@ -43,13 +43,7 @@ class ArticleViewController: ScrollingNavigationViewController, UIWebViewDelegat
     var reading_time = 0 // seconds
     var timer = Timer()
 
-//    let colors = [
-//        DotColors(first: color(0x7DC2F4), second: color(0xE2264D)),
-//        DotColors(first: color(0xF8CC61), second: color(0x9BDFBA)),
-//        DotColors(first: color(0xAF90F4), second: color(0x90D1F9)),
-//        DotColors(first: color(0xE9A966), second: color(0xF8C852)),
-//        DotColors(first: color(0xF68FA7), second: color(0xF6A2B8))
-//    ]
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -93,17 +87,16 @@ class ArticleViewController: ScrollingNavigationViewController, UIWebViewDelegat
         }
         
         self.likeButton.setTitle("", for: .normal)
-        self.likeButton.delegate = self
-        self.likeButton.normalColor = UIColor.white
-        self.likeButton.selectedColor = UIColor(colorLiteralRed: 226/255, green: 38/255, blue: 77/255, alpha: 1)
+//        self.likeButton.delegate = self
+//        self.likeButton.normalColor = UIColor.lightGray
+//        self.likeButton.selectedColor = UIColor(colorLiteralRed: 226/255, green: 38/255, blue: 77/255, alpha: 1)
         self.likeButton.isSelected = false
         if self.article != nil{
             get_article_likes()
             did_user_like_article()
             self.likeButton.addTarget(self, action: #selector(ArticleViewController.like_article), for: .touchUpInside)
+            self.likeButton.addTarget(self, action: #selector(ArticleViewController.change_button), for: .touchUpInside)
         }
-//        let options = [UIApplicationOpenURLOptionUniversalLinksOnly : true]
-//        UIApplication.shared.open(url, options: options, completionHandler: nil)
         
         // Do any additional setup after loading the view.
     }
@@ -133,8 +126,8 @@ class ArticleViewController: ScrollingNavigationViewController, UIWebViewDelegat
     }
 
     
-    func faveButton(_ faveButton: FaveButton, didSelected selected: Bool){
-    }
+//    func faveButton(_ faveButton: FaveButton, didSelected selected: Bool){
+//    }
     
 //    func faveButtonDotColors(_ faveButton: FaveButton) -> [DotColors]?{
 //        if (faveButton === likeButton){
@@ -142,6 +135,54 @@ class ArticleViewController: ScrollingNavigationViewController, UIWebViewDelegat
 //        }
 //        return nil
 //    }
+    
+    
+    func change_button(){
+        if article != nil{
+            if self.article!.user_like == false {
+                // change back to red heart icon
+                self.article!.user_like = true
+                self.like_animation()
+                //                likeButton.setImage(UIImage(named: "red heart icon"), for: .normal)
+            }else{
+                self.article!.user_like = false
+                self.unlike_animation()
+                //                likeButton.setImage(UIImage(named: "selected heart icon"), for: .normal)
+            }
+        }
+    }
+    
+    func like_animation(){
+        
+        UIView.animate(withDuration: 0.15) {
+            self.likeButton.transform = CGAffineTransform(scaleX: 0.3, y: 0.3)
+        }
+        var delayInSeconds = 0.15
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + delayInSeconds) {
+            UIView.animate(withDuration: 0.15) {
+                self.likeButton.setImage(UIImage(named: "selected heart icon"), for: .normal)
+                self.likeButton.transform = CGAffineTransform(scaleX: 1, y: 1)
+            }
+        }
+    }
+    
+    func unlike_animation(){
+        
+        UIView.animate(withDuration: 0.15) {
+            self.likeButton.transform = CGAffineTransform(scaleX: 0.3, y: 0.3)
+        }
+        var delayInSeconds = 0.15
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + delayInSeconds) {
+            UIView.animate(withDuration: 0.15) {
+                self.likeButton.setImage(UIImage(named: "red heart icon"), for: .normal)
+                self.likeButton.transform = CGAffineTransform(scaleX: 1, y: 1)
+            }
+        }
+    }
+
+    
+    
+    
     
     func webViewDidStartLoad(_ webView: UIWebView) {
         
@@ -243,6 +284,8 @@ class ArticleViewController: ScrollingNavigationViewController, UIWebViewDelegat
                 if let count = response.result.value as? Int{
                     if count != 0{
                         self.likeCountLabel.text = " \(count)"
+                    }else{
+                         self.likeCountLabel.text = ""
                     }
                     print(response.result.value)
                 }
@@ -288,13 +331,13 @@ class ArticleViewController: ScrollingNavigationViewController, UIWebViewDelegat
                     if result == true{
                         print("true, button state is now selected")
                         // user already liked this. Set button as selected
-                        self.likeButton.isSelected = true
+                        self.likeButton.setImage(UIImage(named: "selected heart icon"), for: .normal)
 
-                        
                     }else{
                         print("false or nothing")
                         // user didn't like article, or error
-                        //do nothing
+                        self.likeButton.setImage(UIImage(named: "red heart icon"), for: .normal)
+
                     }
                     print("done did_user_like_article")
                 }

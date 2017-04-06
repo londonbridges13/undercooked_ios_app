@@ -16,7 +16,7 @@ import PullToMakeSoup
 import Foundation
 //import RAReorderableLayout
 
-class HomeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, RAReorderableLayoutDelegate, RAReorderableLayoutDataSource {// UICollectionViewDelegate, UICollectionViewDataSource {
+class HomeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, RAReorderableLayoutDelegate, RAReorderableLayoutDataSource, ArtcleCellDelegate {// UICollectionViewDelegate, UICollectionViewDataSource {
 
     @IBOutlet var tableview: UITableView!
     @IBOutlet var collectionView: UICollectionView!
@@ -157,6 +157,8 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             }
             
         }else{
+            self.results.removeAll()
+
             self.selected_handpicked = false
             if self.topics[index].title != nil{
                 self.topic_viewed = self.topics[index].title!
@@ -244,33 +246,68 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             }
             tableView.rowHeight = 322
             return cell
-        }else if results[indexx].article != nil{
+        }else if results.count > 0 && results[indexx].article != nil{
             // Display articles
-            let cell: ArticleCell = tableview.dequeueReusableCell(withIdentifier: "ArticleCell", for: indexPath) as! ArticleCell
+            let cell: V2ArticleCell = tableview.dequeueReusableCell(withIdentifier: "V2ArticleCell", for: indexPath) as! V2ArticleCell
             
-            cell.topicLabel.text = self.selected_topic
+            cell.delegate = self
+            if results[indexx].article != nil{
+                cell.l_article = results[indexx].article!
+            }
+//            cell.topicLabel.text = self.selected_topic
             if results[indexx].article!.title != nil{
                 cell.titleLabel.text = results[indexx].article!.title!
             }
             if results[indexx].article!.desc != nil{
                 cell.descLabel.text = results[indexx].article!.desc!
             }
-            if results[indexx].article!.resource_title != nil{
-                cell.resourceLabel.text = results[indexx].article!.resource_title!
+            if results[indexx].article!.resource != nil && results[indexx].article!.resource?.blogger != nil{
+                cell.bloggerLabel.text = results[indexx].article!.resource?.blogger!
+            }
+            if results[indexx].article!.resource != nil && results[indexx].article!.resource?.blogger_image_url != nil{
+                cell.get_blogger_image(url: results[indexx].article!.resource!.blogger_image_url!)
             }
             if results[indexx].article!.article_image_url != nil{
+                
                 cell.get_article_image(url: results[indexx].article!.article_image_url!)
                 cell.articleImageView.backgroundColor = UIColor.clear
-            }
-            if results[indexx].article!.display_topic != nil{
-                cell.topicLabel.text = results[indexx].article!.display_topic!
             }
             if results[indexx].article!.article_date != nil{
                 let date = results[indexx].article!.article_date!
                 
                 cell.dateLabel.text = date.dashedStringFromDate()
             }
+            
+       
 
+            if cell.l_article != nil{
+                if cell.l_article!.set_likes == false {
+                    // load cell here
+                    cell.likeCountLabel.text = ""
+                    cell.likeButton.isSelected = false
+                }else{
+                    // set like count label and heartbutton
+                    cell.likeCountLabel.text = "\(cell.l_article!.likes)"
+                }
+                
+                if cell.l_article!.user_like == true{
+                    // full red circle
+                    cell.likeButton.setImage(UIImage(named: "selected heart icon"), for: .normal)
+                }else{
+                    cell.likeButton.setImage(UIImage(named: "red heart icon"), for: .normal)
+                }
+            }else{
+                // can't find article, set default like button
+                cell.likeButton.setImage(UIImage(named: "red heart icon"), for: .normal)
+                cell.likeCountLabel.text = ""
+            }
+            
+            
+
+            cell.shareButton.tag = indexx
+            cell.shareButton.addTarget(self, action: #selector(HomeViewController.share_article), for: .touchUpInside)
+            tableView.estimatedRowHeight = 615
+            
             return cell
         }else{
             // Display ProductCell
@@ -286,11 +323,11 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         if indexPath.row == 0{
             //Header Cell
             return 322
-        }else if results[indexx].product != nil{
+        }else if results.count > 0 && results[indexx].product != nil{
             return 92//154
         }else{
             //Article
-            return 218
+            return UITableViewAutomaticDimension
         }
     }
     
@@ -584,25 +621,50 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
                 "access_token": user!.client_token!,
                 "uarticle": article.article!.id!
             ]
-            Alamofire.request("https://secret-citadel-33642.herokuapp.com/api/v1/resources/get_resource", method: .post, parameters: parameters).responseJSON { (response) in
+            Alamofire.request("https://secret-citadel-33642.herokuapp.com/api/v3/resources/get_resource", method: .post, parameters: parameters).responseJSON { (response) in
                 //                print(response.result.value!)
                 if response.result.value != nil{
-                    var resource = "https://secret-citadel-33642.herokuapp.com\(response.result.value!)"
-                    print(resource)//https://secret-citadel-33642.herokuapp.com
                     
-                    resource = (resource as NSString).replacingOccurrences(of: "https://secret-citadel-33642.herokuapp.com", with: "")
-                    
-                    article.article?.resource_title = resource
-                    self.results.append(article)
-                    if self.selected_handpicked == true{
-                        // shuffle the array
-                        self.results.shuffle()
-                    }else{
-                        // organize by dates
+                    if let resource = response.result.value as? NSDictionary{
+                        // Inside Resource
+                        var r = Resource()
+                        var title = resource["title"] as? String?
+                        if title != nil{
+                            r.blogger = title!
+                        }
                         
+                        var image_url = resource["article_image_url"] as? String // using article model to display resource and url in same query
+                        if image_url != nil{
+                            r.blogger_image_url = image_url!
+                            print("Hey blogger url: \(image_url!)")
+                        }
+                        
+                        var id = resource["id"] as? Int
+                        if id != nil{
+                            r.id = id!
+                        }
+                        
+                        article.article?.resource = r // already grabs image url
+                        
+                        print(r)
+                        
+                        // add to results and shuffle (handpicked)
+//                        self.results.append(article)
+                        self.did_user_like_article(article: article.article!)
+//                        if self.selected_handpicked == true{
+//                            // shuffle the array
+//                            self.results.shuffle()
+//                        }else{
+//                            // organize by dates
+//                            
+//                        }
+
+                        print("done -- get_topics")
+                        self.collectionView.reloadData()
+                        self.tableview.reloadData()
+
                     }
-                    self.tableview.reloadData()
-                    print("done -- get_article_resource")
+                    
                 }else{
                     print("Resource.Article ERROR \(article.article!.id!)")
                     self.tableview.reloadData()
@@ -611,6 +673,9 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
     }
     
+    func get_resource_image(resource: Resource){
+        //not needed
+    }
     
     func organized_by_dates(){
         
@@ -625,6 +690,101 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         // for specific topic
         
     }
+    
+    
+    
+    
+    //Share Article
+    func share_article(sender:UIButton){
+        // what happens when the share button is tapped
+        // open activity controller to display sharing options
+        
+        // USE Button.TAG for the index of the article 
+        var article = self.results[sender.tag].article!
+        
+        print("Displaying UIActivity Controller")
+        let textToShare = "\(article.title!)\n"
+        
+        if let myWebsite = NSURL(string: "\(article.article_url!)") {
+            let objectsToShare = [textToShare, myWebsite] as [Any]
+            let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
+            
+            //New Excluded Activities Code
+            activityVC.excludedActivityTypes = [UIActivityType.airDrop]
+            //
+            
+            activityVC.popoverPresentationController?.sourceView = self.view
+            self.present(activityVC, animated: true, completion: nil)
+        }
+    }
+
+    
+    // Update Article Cell
+    // when user likes the article or comments
+    func update_article_cell(article : Article){
+        // find this article in the array (by id), then update the article
+//        if let index = results.index(where: { $0.article != nil && $0.article!.id == article.id! }) {
+            // use index to update the array
+//            print("Updating Cell: \(index)")
+            article.set_likes = true
+            var searchable = Searchable()
+            searchable.article = article
+            results.append(searchable)
+//            results[index].article = article
+            self.tableview.reloadData()
+//        }else{
+//            print("Didn't find index")
+//        }
+    }
+    
+    
+    func get_article_likes(article: Article){
+        
+        let realm = try! Realm()
+        var user = realm.objects(User).first
+        if user != nil && user?.access_token != nil && user?.client_token != nil{
+            let parameters: Parameters = [
+                "access_token": user!.client_token!,
+                "uarticle" : article.id!
+            ]
+            Alamofire.request("https://secret-citadel-33642.herokuapp.com/api/v1/articles/get_article_like_count", method: .post, parameters: parameters).responseJSON { (response) in
+                if let count = response.result.value as? Int{
+                    article.likes = count
+                    
+                    self.update_article_cell(article: article)
+                    if count != 0{
+                    }
+                    print(response.result.value)
+                }
+            }
+        }
+        
+    }
+    
+    func did_user_like_article(article: Article){
+        print("starting did_user_like_article")
+        let realm = try! Realm()
+        var user = realm.objects(User).first
+        if user != nil && user?.access_token != nil && user?.client_token != nil{
+            let parameters: Parameters = [
+                "access_token": user!.client_token!,
+                "utoken": user!.access_token!,
+                "uarticle" : article.id!
+            ]
+                Alamofire.request("https://secret-citadel-33642.herokuapp.com/api/v1/users/did_user_like_article", method: .post, parameters: parameters).responseJSON { (response) in
+                    print("Result: \(response.result.value)")
+                    self.get_article_likes(article: article)
+                    if let result = response.result.value as? Bool{
+                        article.user_like = result
+//                        self.update_article_cell(article: article)
+
+                        print("done did_user_like_article")
+                    }
+                }
+        }
+        
+    }
+    
     
     
     
@@ -982,5 +1142,25 @@ extension Sequence {
         var result = Array(self)
         result.shuffle()
         return result
+    }
+}
+
+
+extension UIImage {
+    func cropBottomImage(image: UIImage) -> UIImage {
+        let height = CGFloat(image.size.height / 3)
+        let rect = CGRect(x: 0, y: image.size.height - height, width: image.size.width, height: height)
+        return cropImage(image: image, toRect: rect)
+    }
+    func cropImage(image:UIImage, toRect rect:CGRect) -> UIImage{
+        let imageRef:CGImage = image.cgImage!.cropping(to: rect)!
+        let croppedImage:UIImage = UIImage(cgImage:imageRef)
+        return croppedImage
+    }
+}
+
+extension Collection where Indices.Iterator.Element == Index {
+    subscript (safe index: Index) -> Generator.Element? {
+        return indices.contains(index) ? self[index] : nil
     }
 }
