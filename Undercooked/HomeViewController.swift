@@ -236,7 +236,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         var indexx = indexPath.row - 1
         if indexPath.row == 0{
             let cell : TopicHeaderCell = tableview.dequeueReusableCell(withIdentifier: "TopicHeaderCell", for: indexPath) as! TopicHeaderCell
-            cell.topicLabel.text = self.selected_topic
+            cell.topicLabel.text = "" //self.selected_topic // when you removed this cell sometimes less is more 
             if self.selected_handpicked == true{
                 cell.topicImageView.image = UIImage(named: "handpicked")
                 cell.topicImageView.layer.cornerRadius = 5
@@ -322,9 +322,9 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         var indexx = indexPath.row - 1
         if indexPath.row == 0{
             //Header Cell
-            return 322
+            return 90//322 //shrinking for a better look (sometimes less is more)
         }else if results.count > 0 && results[indexx].product != nil{
-            return 92//154
+            return 92
         }else{
             //Article
             return UITableViewAutomaticDimension
